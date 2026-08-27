@@ -1,21 +1,30 @@
 <?php
 
-require_once __DIR__ . '/../app/Controller/UserController.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$route = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+use Slim\Factory\AppFactory;
 
-switch ($route) {
+$app = AppFactory::create();
 
-    case '/':
-        echo "Startseite";
-        break;
+$app->get('/', function ($request, $response) {
+    $response->getBody()->write('Willkommen beim MensaPlaner');
+    return $response;
+});
 
-    case '/users':
-        $controller = new UserController();
-        $controller->showUsers();
-        break;
+$app->get('/users', function ($request, $response) {
 
-    default:
-        http_response_code(404);
-        echo 'Seite nicht gefunden';
-}
+    require_once __DIR__ . '/../app/Controller/UserController.php';
+
+    $controller = new UserController();
+
+    $users = $controller->index();
+
+    $response->getBody()->write(
+        json_encode($users)
+    );
+
+    return $response
+        ->withHeader('Content-Type', 'application/json');
+});
+
+$app->run();
