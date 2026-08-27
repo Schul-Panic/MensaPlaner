@@ -1,21 +1,30 @@
 <?php
 
-require_once __DIR__ . '/../app/Controller/UserController.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$route = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+use App\Controller\UserController;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
 
-switch ($route) {
+session_start();
 
-    case '/':
-        echo "Startseite";
-        break;
+$app = AppFactory::create();
+$app->addErrorMiddleware(true, true, true);
+$app->addBodyParsingMiddleware();
 
-    case '/users':
-        $controller = new UserController();
-        $controller->showUsers();
-        break;
+$app->get('/', function (Request $request, Response $response) {
+    ob_start();
+    require __DIR__ . '/../app/View/home.php';
+    $html = ob_get_clean();
 
-    default:
-        http_response_code(404);
-        echo 'Seite nicht gefunden';
-}
+    $response->getBody()->write($html);
+
+    return $response;
+});
+
+$app->get('/users', [UserController::class, 'showUsers']);
+$app->post('/users', [UserController::class, 'addUser']);
+$app->post('/users/{id}/delete', [UserController::class, 'deleteUser']);
+
+$app->run();
