@@ -52,6 +52,12 @@ h1 {
     margin: 0 0 20px;
 }
 
+.week-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
 .card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -236,4 +242,148 @@ form.login-form button:hover {
 
 .switch-auth a:hover {
     text-decoration: underline;
+}
+
+.menu-week {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-day {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.menu-day:first-child {
+    padding-top: 0;
+}
+
+.menu-day:last-child {
+    border-bottom: none;
+}
+
+.menu-day-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.75rem;
+    font-weight: 800;
+}
+
+.menu-day--today .menu-day-header {
+    color: var(--color-primary);
+}
+
+.menu-day-date {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
+.menu-today-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--color-primary);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.menu-section-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.menu-category {
+    margin-top: 18px;
+}
+
+.menu-category-title {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+}
+
+.menu-dish-list {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu-dish-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.menu-dish-name {
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.menu-dish-leader {
+    flex: 1;
+    border-bottom: 1px dotted var(--color-muted);
+    margin-bottom: 4px;
+}
+
+.menu-veg-badge {
+    font-size: 0.85rem;
+}
+
+.menu-dish-price {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.menu-dish-list li form {
+    margin: 0;
+}
+
+.vote-buttons {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.vote-button {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.vote-button:hover {
+    background: var(--color-bg);
+}
+
+.vote-button--up:hover {
+    border-color: var(--color-primary);
+}
+
+.vote-button--down {
+    color: var(--color-muted);
+    background: var(--color-bg);
+}
+
+.vote-button--down:hover {
+    color: #b3261e;
+    border-color: #b3261e;
+    background: var(--color-surface);
 }

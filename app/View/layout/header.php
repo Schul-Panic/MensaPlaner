@@ -11,6 +11,8 @@
 <div class="container">
 
 <nav>
-    <a href="/">Startseite</a>
+    <a href="/">Login</a>
+    <a href="/speiseplan">Speiseplan</a>
+    <a href="/speiseplan/naechste-woche">Abstimmung</a>
     <a href="/users">Benutzer</a>
 </nav>
