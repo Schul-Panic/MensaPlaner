@@ -23,6 +23,10 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
+$app->post('/', function (Request $request, Response $response) {
+    return $response->withHeader('Location', '/')->withStatus(302);
+});
+
 $app->get('/users', [UserController::class, 'showUsers']);
 $app->post('/users', [UserController::class, 'addUser']);
 $app->post('/users/{id}/delete', [UserController::class, 'deleteUser']);
