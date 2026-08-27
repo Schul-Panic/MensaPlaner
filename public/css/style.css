@@ -220,3 +220,20 @@ form.login-form button:hover {
     height: 18px;
     flex-shrink: 0;
 }
+
+.switch-auth {
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    margin: 20px 0 0;
+}
+
+.switch-auth a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.switch-auth a:hover {
+    text-decoration: underline;
+}

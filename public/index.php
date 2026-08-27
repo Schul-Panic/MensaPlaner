@@ -27,6 +27,20 @@ $app->post('/', function (Request $request, Response $response) {
     return $response->withHeader('Location', '/')->withStatus(302);
 });
 
+$app->get('/register', function (Request $request, Response $response) {
+    ob_start();
+    require __DIR__ . '/../app/View/register.php';
+    $html = ob_get_clean();
+
+    $response->getBody()->write($html);
+
+    return $response;
+});
+
+$app->post('/register', function (Request $request, Response $response) {
+    return $response->withHeader('Location', '/')->withStatus(302);
+});
+
 $app->get('/users', [UserController::class, 'showUsers']);
 $app->post('/users', [UserController::class, 'addUser']);
 $app->post('/users/{id}/delete', [UserController::class, 'deleteUser']);

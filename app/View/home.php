@@ -44,6 +44,8 @@
             Mit iCloud anmelden
         </button>
     </div>
+
+    <p class="switch-auth">Noch kein Konto? <a href="/register">Jetzt registrieren</a></p>
 </div>
 
 <?php require __DIR__ . '/layout/footer.php'; ?>
