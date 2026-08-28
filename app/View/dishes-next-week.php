@@ -16,13 +16,10 @@ require __DIR__ . '/layout/header.php';
 
 <div class="menu-week">
 <?php foreach ($weeklyMenu as $weekday => $categories): ?>
-    <div class="menu-day<?php echo $weekday === $today ? ' menu-day--today' : ''; ?>">
+    <div class="menu-day">
         <div class="menu-day-header">
             <span><?php echo htmlspecialchars($weekday); ?></span>
             <span class="menu-day-date">(<?php echo htmlspecialchars($weekdayDates[$weekday]); ?>)</span>
-            <?php if ($weekday === $today): ?>
-                <span class="menu-today-badge">heute</span>
-            <?php endif; ?>
         </div>
 
         <?php foreach ($categories as $category => $dishes): ?>

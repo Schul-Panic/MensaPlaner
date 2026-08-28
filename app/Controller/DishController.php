@@ -17,9 +17,28 @@ class DishController
         $monday = $this->mondayOfWeek(0);
         $weekLabel = $this->weekLabel($monday);
         $weekdayDates = $this->weekdayDates($monday);
+        $activeTab = 'current';
 
         ob_start();
         require __DIR__ . '/../View/dishes.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    public function showNextWeekDishes(Request $request, Response $response): Response
+    {
+        $dishModel = new Dish();
+        $weeklyMenu = $dishModel->getWeeklyMenu();
+        $monday = $this->mondayOfWeek(1);
+        $weekLabel = $this->weekLabel($monday);
+        $weekdayDates = $this->weekdayDates($monday);
+        $activeTab = 'next';
+
+        ob_start();
+        require __DIR__ . '/../View/dishes-next-week.php';
         $html = ob_get_clean();
 
         $response->getBody()->write($html);

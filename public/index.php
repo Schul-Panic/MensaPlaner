@@ -29,6 +29,7 @@ $app->post('/', function (Request $request, Resp1onse $response) {
 });
 
 $app->get('/speiseplan', [DishController::class, 'showDishes']);
+$app->get('/speiseplan/naechste', [DishController::class, 'showNextWeekDishes']);
 $app->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
 $app->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
 
