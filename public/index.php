@@ -30,6 +30,10 @@ $app->post('/', function (Request $request, Resp1onse $response) {
 
 $app->get('/speiseplan', [DishController::class, 'showDishes']);
 $app->get('/speiseplan/naechste', [DishController::class, 'showNextWeekDishes']);
+$app->post('/speiseplan/naechste/warenkorb', [DishController::class, 'addToCart']);
+$app->get('/speiseplan/warenkorb', [DishController::class, 'showCart']);
+$app->post('/speiseplan/warenkorb/entfernen', [DishController::class, 'removeFromCart']);
+$app->post('/speiseplan/warenkorb/bestellen', [DishController::class, 'placeOrder']);
 $app->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
 $app->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
 

@@ -14,12 +14,19 @@ require __DIR__ . '/layout/header.php';
         <ul class="menu-dish-list">
         <?php foreach ($dishes as $dish): ?>
             <li>
-                <span class="menu-dish-name">
-                    <?php echo htmlspecialchars($dish['name']); ?>
-                    <?php if ($dish['vegan']): ?>
-                        <span class="menu-veg-badge" title="Vegan">🌱</span>
-                    <?php endif; ?>
-                </span>
+                <div class="menu-dish-info">
+                    <span class="menu-dish-name">
+                        <?php echo htmlspecialchars($dish['name']); ?>
+                        <?php if ($dish['vegan']): ?>
+                            <span class="menu-veg-badge" title="Vegan">🌱</span>
+                        <?php endif; ?>
+                    </span>
+                    <div class="menu-matrix-labels">
+                    <?php foreach ($dish['labels'] as $label): ?>
+                        <span class="dish-label"><?php echo htmlspecialchars($label); ?></span>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
                 <span class="menu-dish-leader"></span>
                 <span class="vote-buttons">
                     <form method="post" action="/speiseplan/naechste-woche/vote/<?php echo (int) $dish['id']; ?>/up">

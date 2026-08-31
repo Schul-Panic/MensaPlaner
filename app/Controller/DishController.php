@@ -12,12 +12,11 @@ class DishController
     public function showDishes(Request $request, Response $response): Response
     {
         $dishModel = new Dish();
-        $weeklyMenu = $dishModel->getWeeklyMenu();
+        $weeklyMatrix = $dishModel->getWeeklyMatrix();
         $today = $this->currentGermanWeekday();
         $monday = $this->mondayOfWeek(0);
         $weekLabel = $this->weekLabel($monday);
         $weekdayDates = $this->weekdayDates($monday);
-        $activeTab = 'current';
 
         ob_start();
         require __DIR__ . '/../View/dishes.php';
@@ -31,14 +30,95 @@ class DishController
     public function showNextWeekDishes(Request $request, Response $response): Response
     {
         $dishModel = new Dish();
-        $weeklyMenu = $dishModel->getWeeklyMenu();
+        $weeklyMatrix = $dishModel->getNextWeekMatrix();
         $monday = $this->mondayOfWeek(1);
         $weekLabel = $this->weekLabel($monday);
         $weekdayDates = $this->weekdayDates($monday);
-        $activeTab = 'next';
 
         ob_start();
         require __DIR__ . '/../View/dishes-next-week.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    public function addToCart(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+        $day = $data['day'] ?? '';
+        $row = $data['row'] ?? '';
+        $column = $data['column'] ?? '';
+
+        $dish = (new Dish())->getNextWeekMatrix()[$day][$row][$column] ?? null;
+
+        if ($dish) {
+            $key = "{$day}|{$row}|{$column}";
+            $_SESSION['cart'][$key] = ($_SESSION['cart'][$key] ?? 0) + 1;
+        }
+
+        return $response->withHeader('Location', '/speiseplan/naechste')->withStatus(302);
+    }
+
+    public function removeFromCart(Request $request, Response $response): Response
+    {
+        $data = $request->getParsedBody();
+        $key = ($data['day'] ?? '') . '|' . ($data['row'] ?? '') . '|' . ($data['column'] ?? '');
+
+        unset($_SESSION['cart'][$key]);
+
+        return $response->withHeader('Location', '/speiseplan/warenkorb')->withStatus(302);
+    }
+
+    public function showCart(Request $request, Response $response): Response
+    {
+        $matrix = (new Dish())->getNextWeekMatrix();
+        $cartItems = [];
+        $total = 0.0;
+
+        foreach ($_SESSION['cart'] ?? [] as $key => $quantity) {
+            [$day, $row, $column] = explode('|', $key);
+            $dish = $matrix[$day][$row][$column] ?? null;
+
+            if (!$dish) {
+                continue;
+            }
+
+            $unitPrice = (float) str_replace(',', '.', rtrim(trim($dish['price']), ' €'));
+            $lineTotal = $unitPrice * $quantity;
+            $total += $lineTotal;
+
+            $cartItems[] = [
+                'day' => $day,
+                'row' => $row,
+                'column' => $column,
+                'name' => $dish['name'],
+                'quantity' => $quantity,
+                'lineTotal' => number_format($lineTotal, 2, ',', '.') . ' €',
+            ];
+        }
+
+        $totalFormatted = number_format($total, 2, ',', '.') . ' €';
+
+        ob_start();
+        require __DIR__ . '/../View/cart.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    public function placeOrder(Request $request, Response $response): Response
+    {
+        unset($_SESSION['cart']);
+
+        ob_start();
+        $orderPlaced = true;
+        $cartItems = [];
+        $totalFormatted = '0,00 €';
+        require __DIR__ . '/../View/cart.php';
         $html = ob_get_clean();
 
         $response->getBody()->write($html);
