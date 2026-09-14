@@ -36,12 +36,12 @@
         <?php endif; ?>
         <?php if (!empty($_SESSION['account_id'])): ?>
             <div class="nav-account-actions">
+                <a href="/logout" class="nav-logout">Logout</a>
                 <?php if ($isImpersonating): ?>
                     <form method="post" action="/stop-impersonate" class="nav-impersonate-form">
                         <button type="submit" class="nav-impersonate-stop">Als <?php echo htmlspecialchars($_SESSION['account_name']); ?> zurück</button>
                     </form>
                 <?php endif; ?>
-                <a href="/logout" class="nav-logout">Logout</a>
             </div>
         <?php endif; ?>
     </div>
