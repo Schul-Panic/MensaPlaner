@@ -10,10 +10,20 @@
 
 <nav>
     <div class="nav-inner">
+        <?php
+            $isImpersonating = !empty($_SESSION['impersonate_id']);
+            $displayName = $isImpersonating ? $_SESSION['impersonate_name'] : ($_SESSION['account_name'] ?? '');
+            $displayRole = $isImpersonating ? $_SESSION['impersonate_role'] : ($_SESSION['account_role'] ?? '');
+        ?>
         <?php if (empty($_SESSION['account_id'])): ?>
             <a href="/">Login</a>
         <?php else: ?>
-            <span class="nav-account">Hallo, <?php echo htmlspecialchars($_SESSION['account_name']); ?>! <span class="nav-role role-<?php echo htmlspecialchars($_SESSION['account_role'] ?? ''); ?>"><?php echo htmlspecialchars($_SESSION['account_role'] ?? ''); ?></span></span>
+            <span class="nav-account">Hallo, <?php echo htmlspecialchars($displayName); ?>! <span class="nav-role role-<?php echo htmlspecialchars($displayRole); ?>"><?php echo htmlspecialchars($displayRole); ?></span></span>
+            <?php if ($isImpersonating): ?>
+                <form method="post" action="/stop-impersonate" class="nav-impersonate-form">
+                    <button type="submit" class="nav-impersonate-stop">Als <?php echo htmlspecialchars($_SESSION['account_name']); ?> zurück</button>
+                </form>
+            <?php endif; ?>
         <?php endif; ?>
         <div class="nav-dropdown">
             <a href="/speiseplan" class="nav-dropdown-toggle">Speiseplan</a>

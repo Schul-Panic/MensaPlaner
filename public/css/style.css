@@ -114,6 +114,27 @@ nav a:hover {
     border-color: var(--color-border);
 }
 
+.nav-impersonate-form {
+    margin: 0;
+}
+
+.nav-impersonate-stop {
+    border: 1px solid #e2c3b1;
+    background: #f3e4dc;
+    color: #7a3311;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-impersonate-stop:hover {
+    background: #7a3311;
+    color: #fff;
+}
+
 .nav-logout {
     margin-left: auto;
     background: #fbe4e1;
@@ -615,6 +636,19 @@ form.login-form button:hover {
 .data-table-actions button:hover {
     background: #fbe4e1;
     color: #b3261e;
+}
+
+.impersonate-button {
+    color: var(--color-primary) !important;
+    font-weight: 600;
+    font-size: 0.9rem !important;
+    padding: 0 !important;
+}
+
+.impersonate-button:hover {
+    background: transparent !important;
+    color: var(--color-primary-hover) !important;
+    text-decoration: underline;
 }
 
 .menu-matrix-labels {

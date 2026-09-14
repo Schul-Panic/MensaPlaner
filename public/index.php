@@ -79,6 +79,8 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/users/{id}/edit', [AdminController::class, 'editAccount']);
     $group->post('/users/{id}', [AdminController::class, 'updateAccount']);
     $group->post('/users/{id}/delete', [AdminController::class, 'deleteAccount']);
+    $group->post('/users/{id}/impersonate', [AdminController::class, 'impersonate']);
+    $group->post('/stop-impersonate', [AdminController::class, 'stopImpersonate']);
 })->add($requireAdmin);
 
 $app->run();

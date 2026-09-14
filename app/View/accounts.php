@@ -35,6 +35,11 @@ require __DIR__ . '/layout/header.php';
                     <td><?php echo htmlspecialchars(substr($account['created_at'], 0, 16)); ?></td>
                     <td class="data-table-actions">
                         <a href="/users/<?php echo (int) $account['id']; ?>/edit">Bearbeiten</a>
+                        <?php if ((int) $account['id'] !== (int) $_SESSION['account_id']): ?>
+                            <form method="post" action="/users/<?php echo (int) $account['id']; ?>/impersonate">
+                                <button type="submit" class="impersonate-button">Anmelden als</button>
+                            </form>
+                        <?php endif; ?>
                         <form method="post" action="/users/<?php echo (int) $account['id']; ?>/delete">
                             <button type="submit" aria-label="Löschen">✕</button>
                         </form>

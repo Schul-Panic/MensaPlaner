@@ -78,4 +78,24 @@ class AdminController
 
         return $response->withHeader('Location', '/users')->withStatus(302);
     }
+
+    public function impersonate(Request $request, Response $response, array $args): Response
+    {
+        $account = (new Account())->findById((int) $args['id']);
+
+        if ($account) {
+            $_SESSION['impersonate_id'] = $account['id'];
+            $_SESSION['impersonate_name'] = $account['name'];
+            $_SESSION['impersonate_role'] = $account['role'];
+        }
+
+        return $response->withHeader('Location', '/speiseplan')->withStatus(302);
+    }
+
+    public function stopImpersonate(Request $request, Response $response): Response
+    {
+        unset($_SESSION['impersonate_id'], $_SESSION['impersonate_name'], $_SESSION['impersonate_role']);
+
+        return $response->withHeader('Location', '/users')->withStatus(302);
+    }
 }
