@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Dish;
+use App\Model\Order;
 use App\Model\Vote;
 use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -74,8 +75,44 @@ class DishController
 
     public function showCart(Request $request, Response $response): Response
     {
-        $matrix = (new Dish())->getNextWeekMatrix();
+        [$cartItems, $total] = $this->resolveCartItems();
+        $totalFormatted = number_format($total, 2, ',', '.') . ' €';
+
+        ob_start();
+        require __DIR__ . '/../View/cart.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    public function placeOrder(Request $request, Response $response): Response
+    {
+        [$cartItems, $total] = $this->resolveCartItems();
+
+        if ($cartItems) {
+            (new Order())->create((int) $_SESSION['account_id'], $cartItems);
+        }
+
+        unset($_SESSION['cart']);
+
+        ob_start();
+        $orderPlaced = true;
+        $totalFormatted = number_format($total, 2, ',', '.') . ' €';
         $cartItems = [];
+        require __DIR__ . '/../View/cart.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    private function resolveCartItems(): array
+    {
+        $matrix = (new Dish())->getNextWeekMatrix();
+        $items = [];
         $total = 0.0;
 
         foreach ($_SESSION['cart'] ?? [] as $key => $quantity) {
@@ -90,41 +127,18 @@ class DishController
             $lineTotal = $unitPrice * $quantity;
             $total += $lineTotal;
 
-            $cartItems[] = [
+            $items[] = [
                 'day' => $day,
                 'row' => $row,
                 'column' => $column,
                 'name' => $dish['name'],
+                'price' => $dish['price'],
                 'quantity' => $quantity,
                 'lineTotal' => number_format($lineTotal, 2, ',', '.') . ' €',
             ];
         }
 
-        $totalFormatted = number_format($total, 2, ',', '.') . ' €';
-
-        ob_start();
-        require __DIR__ . '/../View/cart.php';
-        $html = ob_get_clean();
-
-        $response->getBody()->write($html);
-
-        return $response;
-    }
-
-    public function placeOrder(Request $request, Response $response): Response
-    {
-        unset($_SESSION['cart']);
-
-        ob_start();
-        $orderPlaced = true;
-        $cartItems = [];
-        $totalFormatted = '0,00 €';
-        require __DIR__ . '/../View/cart.php';
-        $html = ob_get_clean();
-
-        $response->getBody()->write($html);
-
-        return $response;
+        return [$items, $total];
     }
 
     public function showNextWeekVoting(Request $request, Response $response): Response
