@@ -49,15 +49,16 @@ class AdminController
         $email = trim($data['email'] ?? '');
         $role = $data['role'] ?? '';
         $password = trim($data['password'] ?? '');
+        $createdAt = trim($data['created_at'] ?? '');
 
-        if ($name === '' || $email === '' || !in_array($role, self::ROLES, true)) {
+        if ($name === '' || $email === '' || $createdAt === '' || !in_array($role, self::ROLES, true)) {
             $_SESSION['flash_error'] = 'Bitte alle Felder gültig ausfüllen.';
 
             return $response->withHeader('Location', "/users/{$id}/edit")->withStatus(302);
         }
 
         try {
-            (new Account())->update($id, $name, $email, $role, $password ?: null);
+            (new Account())->update($id, $name, $email, $role, $password ?: null, $createdAt);
         } catch (PDOException $exception) {
             $_SESSION['flash_error'] = 'Diese E-Mail-Adresse wird schon verwendet.';
 

@@ -38,7 +38,7 @@ class Account
     public function findById(int $id): ?array
     {
         $statement = Database::connection()->prepare(
-            'SELECT id, name, email, role FROM accounts WHERE id = :id'
+            'SELECT id, name, email, role, created_at FROM accounts WHERE id = :id'
         );
         $statement->execute(['id' => $id]);
 
@@ -56,33 +56,32 @@ class Account
         return $statement->fetchAll();
     }
 
-    public function update(int $id, string $name, string $email, string $role, ?string $password = null): void
-    {
-        if ($password !== null && $password !== '') {
-            $statement = Database::connection()->prepare(
-                'UPDATE accounts SET name = :name, email = :email, role = :role, password_hash = :password_hash
-                 WHERE id = :id'
-            );
-            $statement->execute([
-                'name' => $name,
-                'email' => $email,
-                'role' => $role,
-                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-                'id' => $id,
-            ]);
-
-            return;
-        }
-
-        $statement = Database::connection()->prepare(
-            'UPDATE accounts SET name = :name, email = :email, role = :role WHERE id = :id'
-        );
-        $statement->execute([
+    public function update(
+        int $id,
+        string $name,
+        string $email,
+        string $role,
+        ?string $password,
+        string $createdAt
+    ): void {
+        $fields = [
             'name' => $name,
             'email' => $email,
             'role' => $role,
+            'created_at' => $createdAt,
             'id' => $id,
-        ]);
+        ];
+        $sql = 'UPDATE accounts SET name = :name, email = :email, role = :role, created_at = :created_at';
+
+        if ($password !== null && $password !== '') {
+            $sql .= ', password_hash = :password_hash';
+            $fields['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        $sql .= ' WHERE id = :id';
+
+        $statement = Database::connection()->prepare($sql);
+        $statement->execute($fields);
     }
 
     public function delete(int $id): void

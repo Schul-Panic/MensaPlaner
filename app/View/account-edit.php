@@ -2,10 +2,13 @@
 
 use App\Controller\AdminController;
 
+$createdAtValue = (new DateTime($account['created_at']))->format('Y-m-d\TH:i');
+
 require __DIR__ . '/layout/header.php';
 ?>
 
 <h1>Benutzer bearbeiten</h1>
+<p class="intro">ID: <?php echo (int) $account['id']; ?> (nicht änderbar)</p>
 
 <?php if (!empty($_SESSION['flash_error'])): ?>
     <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
@@ -32,9 +35,14 @@ require __DIR__ . '/layout/header.php';
             </select>
         </label>
         <label>
+            Erstellt am
+            <input type="datetime-local" name="created_at" value="<?php echo htmlspecialchars($createdAtValue); ?>" required>
+        </label>
+        <label>
             Neues Passwort (optional)
             <input type="password" name="password" placeholder="Leer lassen = Passwort bleibt gleich">
         </label>
+        <p class="field-hint">Das aktuelle Passwort ist als Hash gespeichert und kann aus Sicherheitsgründen nicht angezeigt werden — nur zurücksetzen.</p>
         <button type="submit">Speichern</button>
     </form>
 

@@ -12,6 +12,7 @@
         <table class="data-table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>E-Mail</th>
                     <th>Rolle</th>
@@ -22,6 +23,7 @@
             <tbody>
             <?php foreach ($accounts as $account): ?>
                 <tr>
+                    <td><?php echo (int) $account['id']; ?></td>
                     <td><?php echo htmlspecialchars($account['name']); ?></td>
                     <td><?php echo htmlspecialchars($account['email']); ?></td>
                     <td><span class="nav-role"><?php echo htmlspecialchars($account['role']); ?></span></td>
