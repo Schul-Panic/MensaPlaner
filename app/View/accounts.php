@@ -1,4 +1,9 @@
-<?php require __DIR__ . '/layout/header.php'; ?>
+<?php
+
+$wide = true;
+
+require __DIR__ . '/layout/header.php';
+?>
 
 <h1>Benutzer</h1>
 <p class="intro">Alle registrierten Accounts &mdash; nur für Admins sichtbar.</p>
