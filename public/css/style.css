@@ -796,6 +796,18 @@ form.login-form button:hover {
     background: var(--color-surface);
 }
 
+.vote-button--active.vote-button--up {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.vote-button--active.vote-button--down {
+    background: #b3261e;
+    border-color: #b3261e;
+    color: #fff;
+}
+
 .menu-matrix-cell form {
     margin: 0;
 }

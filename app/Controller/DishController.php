@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Dish;
+use App\Model\Vote;
 use DateTime;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -140,7 +141,10 @@ class DishController
         }
         unset($dishes);
 
-        $votes = $_SESSION['votes'] ?? [];
+        $allDishIds = array_column($dishModel->getFlattenedDishes(), 'id');
+        $voteModel = new Vote();
+        $votes = $voteModel->resultsForDishIds($allDishIds);
+        $votedChoices = $voteModel->userVotes((int) $_SESSION['account_id']);
         $weekLabel = $this->weekLabel($this->mondayOfWeek(1));
 
         ob_start();
@@ -158,7 +162,7 @@ class DishController
         $direction = $args['direction'] ?? '';
 
         if (in_array($direction, ['up', 'down'], true)) {
-            $_SESSION['votes'][$dishId][$direction] = ($_SESSION['votes'][$dishId][$direction] ?? 0) + 1;
+            (new Vote())->cast($dishId, (int) $_SESSION['account_id'], $direction);
         }
 
         return $response->withHeader('Location', '/speiseplan/naechste-woche')->withStatus(302);

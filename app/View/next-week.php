@@ -13,6 +13,7 @@ require __DIR__ . '/layout/header.php';
         <h2 class="menu-section-title"><?php echo htmlspecialchars(Dish::CATEGORY_LABELS[$category]); ?></h2>
         <ul class="menu-dish-list">
         <?php foreach ($dishes as $dish): ?>
+            <?php $choice = $votedChoices[$dish['id']] ?? null; ?>
             <li>
                 <div class="menu-dish-info">
                     <span class="menu-dish-name">
@@ -30,12 +31,12 @@ require __DIR__ . '/layout/header.php';
                 <span class="menu-dish-leader"></span>
                 <span class="vote-buttons">
                     <form method="post" action="/speiseplan/naechste-woche/vote/<?php echo (int) $dish['id']; ?>/up">
-                        <button type="submit" class="vote-button vote-button--up">
+                        <button type="submit" class="vote-button vote-button--up<?php echo $choice === 'up' ? ' vote-button--active' : ''; ?>">
                             👍 <?php echo (int) ($votes[$dish['id']]['up'] ?? 0); ?>
                         </button>
                     </form>
                     <form method="post" action="/speiseplan/naechste-woche/vote/<?php echo (int) $dish['id']; ?>/down">
-                        <button type="submit" class="vote-button vote-button--down">
+                        <button type="submit" class="vote-button vote-button--down<?php echo $choice === 'down' ? ' vote-button--active' : ''; ?>">
                             👎 <?php echo (int) ($votes[$dish['id']]['down'] ?? 0); ?>
                         </button>
                     </form>
