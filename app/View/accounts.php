@@ -39,7 +39,7 @@ require __DIR__ . '/layout/header.php';
                             <button type="button" class="impersonate-button impersonate-button--self" disabled title="Das bist du">👤</button>
                         <?php else: ?>
                             <form method="post" action="/users/<?php echo (int) $account['id']; ?>/impersonate">
-                                <button type="submit" class="impersonate-button">Anmelden als</button>
+                                <button type="submit" class="impersonate-button" title="Anmelden als <?php echo htmlspecialchars($account['name']); ?>">👤</button>
                             </form>
                         <?php endif; ?>
                         <form method="post" action="/users/<?php echo (int) $account['id']; ?>/delete">

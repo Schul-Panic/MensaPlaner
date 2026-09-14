@@ -652,28 +652,36 @@ form.login-form button:hover {
 }
 
 .impersonate-button {
-    color: var(--color-primary) !important;
-    font-weight: 600;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-primary) !important;
+    color: #fff !important;
     font-size: 0.9rem !important;
     padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .impersonate-button:hover {
-    background: transparent !important;
-    color: var(--color-primary-hover) !important;
-    text-decoration: underline;
+    background: var(--color-primary-hover) !important;
+}
+
+.impersonate-button:active {
+    transform: scale(0.92);
 }
 
 .impersonate-button--self {
+    background: var(--color-bg) !important;
     color: var(--color-muted) !important;
-    font-size: 1rem !important;
     cursor: default;
     opacity: 0.6;
 }
 
 .impersonate-button--self:hover {
-    color: var(--color-muted) !important;
-    text-decoration: none;
+    background: var(--color-bg) !important;
 }
 
 .menu-matrix-labels {
