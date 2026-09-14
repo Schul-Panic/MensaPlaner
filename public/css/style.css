@@ -664,6 +664,18 @@ form.login-form button:hover {
     text-decoration: underline;
 }
 
+.impersonate-button--self {
+    color: var(--color-muted) !important;
+    font-size: 1rem !important;
+    cursor: default;
+    opacity: 0.6;
+}
+
+.impersonate-button--self:hover {
+    color: var(--color-muted) !important;
+    text-decoration: none;
+}
+
 .menu-matrix-labels {
     display: flex;
     flex-wrap: wrap;
