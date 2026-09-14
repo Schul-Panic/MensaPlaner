@@ -70,6 +70,19 @@ nav a:hover {
     font-weight: 600;
 }
 
+.nav-logout {
+    margin-left: auto;
+    background: #fbe4e1;
+    color: #b3261e;
+    border: 1px solid #f0b8b0;
+    font-weight: 700;
+}
+
+.nav-logout:hover {
+    background: #b3261e;
+    color: #fff;
+}
+
 .nav-dropdown {
     position: relative;
 }

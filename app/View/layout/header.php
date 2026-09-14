@@ -10,11 +10,10 @@
 
 <nav>
     <div class="nav-inner">
-        <?php if (!empty($_SESSION['account_id'])): ?>
-            <span class="nav-account">Angemeldet als <?php echo htmlspecialchars($_SESSION['account_name']); ?></span>
-            <a href="/logout">Logout</a>
-        <?php else: ?>
+        <?php if (empty($_SESSION['account_id'])): ?>
             <a href="/">Login</a>
+        <?php else: ?>
+            <span class="nav-account">Hallo, <?php echo htmlspecialchars($_SESSION['account_name']); ?>!</span>
         <?php endif; ?>
         <div class="nav-dropdown">
             <a href="/speiseplan" class="nav-dropdown-toggle">Speiseplan</a>
@@ -28,6 +27,9 @@
         <a href="/speiseplan/naechste-woche">Abstimmung</a>
         <a href="/speiseplan/warenkorb">Warenkorb<?php $cartCount = array_sum($_SESSION['cart'] ?? []); if ($cartCount > 0): ?> <span class="nav-badge"><?php echo (int) $cartCount; ?></span><?php endif; ?></a>
         <a href="/users">Benutzer</a>
+        <?php if (!empty($_SESSION['account_id'])): ?>
+            <a href="/logout" class="nav-logout">Logout</a>
+        <?php endif; ?>
     </div>
 </nav>
 
