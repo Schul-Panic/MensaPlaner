@@ -31,7 +31,7 @@
         </div>
         <a href="/speiseplan/naechste-woche">Abstimmung</a>
         <a href="/speiseplan/warenkorb">Warenkorb<?php $cartCount = array_sum($_SESSION['cart'] ?? []); if ($cartCount > 0): ?> <span class="nav-badge"><?php echo (int) $cartCount; ?></span><?php endif; ?></a>
-        <?php if (($_SESSION['account_role'] ?? '') === 'admin'): ?>
+        <?php if ($displayRole === 'admin'): ?>
             <a href="/users">Benutzer</a>
         <?php endif; ?>
         <?php if (!empty($_SESSION['account_id'])): ?>
