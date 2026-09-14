@@ -31,7 +31,7 @@ require __DIR__ . '/layout/header.php';
                     <td><?php echo (int) $account['id']; ?></td>
                     <td><?php echo htmlspecialchars($account['name']); ?></td>
                     <td><?php echo htmlspecialchars($account['email']); ?></td>
-                    <td><span class="nav-role"><?php echo htmlspecialchars($account['role']); ?></span></td>
+                    <td><span class="nav-role role-<?php echo htmlspecialchars($account['role']); ?>"><?php echo htmlspecialchars($account['role']); ?></span></td>
                     <td><?php echo htmlspecialchars(substr($account['created_at'], 0, 16)); ?></td>
                     <td class="data-table-actions">
                         <a href="/users/<?php echo (int) $account['id']; ?>/edit">Bearbeiten</a>

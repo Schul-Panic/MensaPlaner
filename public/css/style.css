@@ -76,11 +76,42 @@ nav a:hover {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--color-primary-hover);
-    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-bg));
+    color: var(--color-muted);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
     padding: 2px 8px;
     border-radius: 999px;
     margin-left: 4px;
+}
+
+.role-admin {
+    color: #b3261e;
+    background: #fbe4e1;
+    border-color: #f0b8b0;
+}
+
+.role-teacher {
+    color: #1a4fa0;
+    background: #dce7fb;
+    border-color: #b7cdf3;
+}
+
+.role-student {
+    color: var(--color-primary-hover);
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-bg));
+    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+.role-mitarbeiter {
+    color: #7a3311;
+    background: #f3e4dc;
+    border-color: #e2c3b1;
+}
+
+.role-gast {
+    color: var(--color-muted);
+    background: var(--color-bg);
+    border-color: var(--color-border);
 }
 
 .nav-logout {
