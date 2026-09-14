@@ -2,9 +2,9 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use App\Controller\AdminController;
 use App\Controller\AuthController;
 use App\Controller\DishController;
-use App\Controller\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -21,6 +21,18 @@ $app->addBodyParsingMiddleware();
 $requireLogin = function (Request $request, RequestHandler $handler) {
     if (empty($_SESSION['account_id'])) {
         return (new SlimResponse())->withHeader('Location', '/')->withStatus(302);
+    }
+
+    return $handler->handle($request);
+};
+
+$requireAdmin = function (Request $request, RequestHandler $handler) {
+    if (empty($_SESSION['account_id'])) {
+        return (new SlimResponse())->withHeader('Location', '/')->withStatus(302);
+    }
+
+    if (($_SESSION['account_role'] ?? '') !== 'admin') {
+        return (new SlimResponse())->withHeader('Location', '/speiseplan')->withStatus(302);
     }
 
     return $handler->handle($request);
@@ -60,10 +72,13 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/speiseplan/warenkorb/bestellen', [DishController::class, 'placeOrder']);
     $group->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
     $group->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
-
-    $group->get('/users', [UserController::class, 'showUsers']);
-    $group->post('/users', [UserController::class, 'addUser']);
-    $group->post('/users/{id}/delete', [UserController::class, 'deleteUser']);
 })->add($requireLogin);
+
+$app->group('', function (RouteCollectorProxy $group) {
+    $group->get('/users', [AdminController::class, 'showAccounts']);
+    $group->get('/users/{id}/edit', [AdminController::class, 'editAccount']);
+    $group->post('/users/{id}', [AdminController::class, 'updateAccount']);
+    $group->post('/users/{id}/delete', [AdminController::class, 'deleteAccount']);
+})->add($requireAdmin);
 
 $app->run();

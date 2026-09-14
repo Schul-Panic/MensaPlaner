@@ -46,4 +46,48 @@ class Account
 
         return $account ?: null;
     }
+
+    public function all(): array
+    {
+        $statement = Database::connection()->query(
+            'SELECT id, name, email, role, created_at FROM accounts ORDER BY id'
+        );
+
+        return $statement->fetchAll();
+    }
+
+    public function update(int $id, string $name, string $email, string $role, ?string $password = null): void
+    {
+        if ($password !== null && $password !== '') {
+            $statement = Database::connection()->prepare(
+                'UPDATE accounts SET name = :name, email = :email, role = :role, password_hash = :password_hash
+                 WHERE id = :id'
+            );
+            $statement->execute([
+                'name' => $name,
+                'email' => $email,
+                'role' => $role,
+                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                'id' => $id,
+            ]);
+
+            return;
+        }
+
+        $statement = Database::connection()->prepare(
+            'UPDATE accounts SET name = :name, email = :email, role = :role WHERE id = :id'
+        );
+        $statement->execute([
+            'name' => $name,
+            'email' => $email,
+            'role' => $role,
+            'id' => $id,
+        ]);
+    }
+
+    public function delete(int $id): void
+    {
+        $statement = Database::connection()->prepare('DELETE FROM accounts WHERE id = :id');
+        $statement->execute(['id' => $id]);
+    }
 }
