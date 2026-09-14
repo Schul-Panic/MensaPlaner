@@ -19,11 +19,6 @@
             <a href="/">Login</a>
         <?php else: ?>
             <span class="nav-account">Hallo, <?php echo htmlspecialchars($displayName); ?>! <span class="nav-role role-<?php echo htmlspecialchars($displayRole); ?>"><?php echo htmlspecialchars($displayRole); ?></span></span>
-            <?php if ($isImpersonating): ?>
-                <form method="post" action="/stop-impersonate" class="nav-impersonate-form">
-                    <button type="submit" class="nav-impersonate-stop">Als <?php echo htmlspecialchars($_SESSION['account_name']); ?> zurück</button>
-                </form>
-            <?php endif; ?>
         <?php endif; ?>
         <div class="nav-dropdown">
             <a href="/speiseplan" class="nav-dropdown-toggle">Speiseplan</a>
@@ -40,7 +35,14 @@
             <a href="/users">Benutzer</a>
         <?php endif; ?>
         <?php if (!empty($_SESSION['account_id'])): ?>
-            <a href="/logout" class="nav-logout">Logout</a>
+            <div class="nav-account-actions">
+                <?php if ($isImpersonating): ?>
+                    <form method="post" action="/stop-impersonate" class="nav-impersonate-form">
+                        <button type="submit" class="nav-impersonate-stop">Als <?php echo htmlspecialchars($_SESSION['account_name']); ?> zurück</button>
+                    </form>
+                <?php endif; ?>
+                <a href="/logout" class="nav-logout">Logout</a>
+            </div>
         <?php endif; ?>
     </div>
 </nav>
