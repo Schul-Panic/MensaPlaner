@@ -70,6 +70,19 @@ nav a:hover {
     font-weight: 600;
 }
 
+.nav-role {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-primary-hover);
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-bg));
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 4px;
+}
+
 .nav-logout {
     margin-left: auto;
     background: #fbe4e1;

@@ -25,6 +25,7 @@ class AuthController
 
         $_SESSION['account_id'] = $account['id'];
         $_SESSION['account_name'] = $account['name'];
+        $_SESSION['account_role'] = $account['role'];
 
         return $response->withHeader('Location', '/speiseplan')->withStatus(302);
     }
@@ -59,13 +60,14 @@ class AuthController
 
         $_SESSION['account_id'] = $account['id'];
         $_SESSION['account_name'] = $account['name'];
+        $_SESSION['account_role'] = $account['role'];
 
         return $response->withHeader('Location', '/speiseplan')->withStatus(302);
     }
 
     public function logout(Request $request, Response $response): Response
     {
-        unset($_SESSION['account_id'], $_SESSION['account_name']);
+        unset($_SESSION['account_id'], $_SESSION['account_name'], $_SESSION['account_role']);
 
         return $response->withHeader('Location', '/')->withStatus(302);
     }

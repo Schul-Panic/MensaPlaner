@@ -13,7 +13,7 @@
         <?php if (empty($_SESSION['account_id'])): ?>
             <a href="/">Login</a>
         <?php else: ?>
-            <span class="nav-account">Hallo, <?php echo htmlspecialchars($_SESSION['account_name']); ?>!</span>
+            <span class="nav-account">Hallo, <?php echo htmlspecialchars($_SESSION['account_name']); ?>! <span class="nav-role"><?php echo htmlspecialchars($_SESSION['account_role'] ?? ''); ?></span></span>
         <?php endif; ?>
         <div class="nav-dropdown">
             <a href="/speiseplan" class="nav-dropdown-toggle">Speiseplan</a>
