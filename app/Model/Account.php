@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Model;
+
+use App\Database;
+use PDO;
+
+class Account
+{
+    public function findByEmail(string $email): ?array
+    {
+        $statement = Database::connection()->prepare(
+            'SELECT id, name, email, password_hash FROM accounts WHERE email = :email'
+        );
+        $statement->execute(['email' => $email]);
+
+        $account = $statement->fetch();
+
+        return $account ?: null;
+    }
+
+    public function create(string $name, string $email, string $password): array
+    {
+        $statement = Database::connection()->prepare(
+            'INSERT INTO accounts (name, email, password_hash) VALUES (:name, :email, :password_hash)
+             RETURNING id, name, email'
+        );
+        $statement->execute([
+            'name' => $name,
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+        ]);
+
+        return $statement->fetch();
+    }
+
+    public function findById(int $id): ?array
+    {
+        $statement = Database::connection()->prepare(
+            'SELECT id, name, email FROM accounts WHERE id = :id'
+        );
+        $statement->execute(['id' => $id]);
+
+        $account = $statement->fetch();
+
+        return $account ?: null;
+    }
+}

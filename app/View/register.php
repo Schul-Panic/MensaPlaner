@@ -3,6 +3,10 @@
 <h1>Konto erstellen</h1>
 <p class="intro">Registriere dich, um MensaPlaner nutzen zu können.</p>
 
+<?php if (!empty($_SESSION['flash_error'])): ?>
+    <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
+<?php endif; ?>
+
 <div class="card">
     <form class="login-form" method="post" action="/register">
         <label>

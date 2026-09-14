@@ -3,11 +3,15 @@
 <h1>Willkommen bei MensaPlaner</h1>
 <p class="intro">Melde dich an, um den Speiseplan zu sehen und zu verwalten.</p>
 
+<?php if (!empty($_SESSION['flash_error'])): ?>
+    <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
+<?php endif; ?>
+
 <div class="card">
     <form class="login-form" method="post" action="/">
         <label>
-            Benutzername
-            <input type="text" name="username" placeholder="Benutzername" required>
+            E-Mail
+            <input type="email" name="email" placeholder="E-Mail" required>
         </label>
         <label>
             Passwort
