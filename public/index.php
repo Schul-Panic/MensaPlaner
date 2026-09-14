@@ -24,7 +24,7 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
-$app->post('/', function (Request $request, Resp1onse $response) {
+$app->post('/', function (Request $request, Response $response) {
     return $response->withHeader('Location', '/speiseplan')->withStatus(302);
 });
 
