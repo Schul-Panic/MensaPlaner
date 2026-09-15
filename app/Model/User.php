@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Model;
-
 class User
 {
     public function getAllUsers()
@@ -14,10 +12,6 @@ class User
             [
                 "id" => 2,
                 "name" => "Max"
-            ],
-            [
-                "id" => 3,
-                "name" => "Vlada"
             ]
         ];
     }

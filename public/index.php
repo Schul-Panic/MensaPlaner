@@ -2,57 +2,29 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Controller\DishController;
-use App\Controller\UserController;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-session_start();
-
 $app = AppFactory::create();
-$app->addErrorMiddleware(true, true, true);
-$app->addBodyParsingMiddleware();
 
-$app->get('/', function (Request $request, Response $response) {
-    ob_start();
-    require __DIR__ . '/../app/View/home.php';
-    $html = ob_get_clean();
-
-    $response->getBody()->write($html);
-
+$app->get('/', function ($request, $response) {
+    $response->getBody()->write('Willkommen beim MensaPlaner');
     return $response;
 });
 
-$app->post('/', function (Request $request, Resp1onse $response) {
-    return $response->withHeader('Location', '/speiseplan')->withStatus(302);
+$app->get('/users', function ($request, $response) {
+
+    require_once __DIR__ . '/../app/Controller/UserController.php';
+
+    $controller = new UserController();
+
+    $users = $controller->index();
+
+    $response->getBody()->write(
+        json_encode($users)
+    );
+
+    return $response
+        ->withHeader('Content-Type', 'application/json');
 });
-
-$app->get('/speiseplan', [DishController::class, 'showDishes']);
-$app->get('/speiseplan/naechste', [DishController::class, 'showNextWeekDishes']);
-$app->post('/speiseplan/naechste/warenkorb', [DishController::class, 'addToCart']);
-$app->get('/speiseplan/warenkorb', [DishController::class, 'showCart']);
-$app->post('/speiseplan/warenkorb/entfernen', [DishController::class, 'removeFromCart']);
-$app->post('/speiseplan/warenkorb/bestellen', [DishController::class, 'placeOrder']);
-$app->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
-$app->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
-
-$app->get('/register', function (Request $request, Response $response) {
-    ob_start();
-    require __DIR__ . '/../app/View/register.php';
-    $html = ob_get_clean();
-
-    $response->getBody()->write($html);
-
-    return $response;
-});
-
-$app->post('/register', function (Request $request, Response $response) {
-    return $response->withHeader('Location', '/')->withStatus(302);
-});
-
-$app->get('/users', [UserController::class, 'showUsers']);
-$app->post('/users', [UserController::class, 'addUser']);
-$app->post('/users/{id}/delete', [UserController::class, 'deleteUser']);
 
 $app->run();

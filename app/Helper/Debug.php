@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Helper;
-
 class Debug
 {
     public static function varDumpAndDiePre(mixed $variable): void
