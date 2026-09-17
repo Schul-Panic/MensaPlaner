@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\AdminController;
 use App\Controller\AuthController;
+use App\Controller\DishAdminController;
 use App\Controller\DishController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -89,6 +90,12 @@ $app->group('', function (RouteCollectorProxy $group) {
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/speiseplan/bestellungen', [DishController::class, 'showOrderOverview']);
     $group->get('/speiseplan/bestellungen/pdf', [DishController::class, 'downloadOrderOverviewPdf']);
+    $group->get('/speiseplan/verwaltung', [DishAdminController::class, 'showDishManagement']);
+    $group->get('/speiseplan/verwaltung/neu', [DishAdminController::class, 'newDish']);
+    $group->post('/speiseplan/verwaltung', [DishAdminController::class, 'createDish']);
+    $group->get('/speiseplan/verwaltung/{id}/edit', [DishAdminController::class, 'editDish']);
+    $group->post('/speiseplan/verwaltung/{id}', [DishAdminController::class, 'updateDish']);
+    $group->post('/speiseplan/verwaltung/{id}/delete', [DishAdminController::class, 'deleteDish']);
 })->add($requireStaff);
 
 $app->group('', function (RouteCollectorProxy $group) {

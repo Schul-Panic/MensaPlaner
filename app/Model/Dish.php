@@ -2,6 +2,9 @@
 
 namespace App\Model;
 
+use App\Database;
+use PDO;
+
 class Dish
 {
     public const CATEGORY_LABELS = [
@@ -21,156 +24,199 @@ class Dish
         "ohne_fleisch" => "Ohne Fleisch",
     ];
 
-    public function getWeeklyMatrix()
+    public const DAYS = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
+
+    public function getWeeklyMatrix(): array
     {
-        return [
-            "Montag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Currywurst mit Pommes", "price" => "3,50 €", "labels" => ["Schwein", "Gluten"]],
-                    "ohne_fleisch" => ["name" => "Gemüsecurry mit Reis", "price" => "3,20 €", "labels" => ["Vegan"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Kartoffelsalat", "price" => "1,50 €", "labels" => ["Eier"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Vanillepudding", "price" => "1,20 €", "labels" => ["Milch", "Eier"]],
-                ],
-            ],
-            "Dienstag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Rinderroulade mit Rotkohl und Klößen", "price" => "4,20 €", "labels" => ["Rind", "Gluten"]],
-                    "ohne_fleisch" => ["name" => "Kartoffel-Lauch-Suppe mit Baguette", "price" => "2,80 €", "labels" => ["Milch", "Gluten"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Rotkohl", "price" => "1,40 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Schokopudding", "price" => "1,20 €", "labels" => ["Milch"]],
-                ],
-            ],
-            "Mittwoch" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Hähnchengeschnetzeltes mit Basmatireis", "price" => "3,90 €", "labels" => ["Hähnchen"]],
-                    "ohne_fleisch" => ["name" => "Linsen-Curry mit Reis", "price" => "3,10 €", "labels" => ["Vegan"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Basmatireis", "price" => "1,30 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Grießbrei mit Kirschen", "price" => "1,30 €", "labels" => ["Milch", "Gluten"]],
-                ],
-            ],
-            "Donnerstag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Putengeschnetzeltes mit Nudeln", "price" => "3,90 €", "labels" => ["Pute", "Gluten", "Eier"]],
-                    "ohne_fleisch" => ["name" => "Linsen-Dal mit Naan-Brot", "price" => "3,10 €", "labels" => ["Gluten"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Salzkartoffeln", "price" => "1,30 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Milchreis mit Zimt-Zucker", "price" => "1,30 €", "labels" => ["Milch"]],
-                ],
-            ],
-            "Freitag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Pizza Salami", "price" => "3,00 €", "labels" => ["Schwein", "Gluten", "Milch"]],
-                    "ohne_fleisch" => ["name" => "Pizza Margherita (vegan)", "price" => "3,00 €", "labels" => ["Vegan", "Gluten"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Rohkostsalat", "price" => "1,60 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Rote Grütze mit Vanillesoße", "price" => "1,30 €", "labels" => ["Milch"]],
-                ],
-            ],
-        ];
+        return $this->buildMatrix('current');
     }
 
-    public function getNextWeekMatrix()
+    public function getNextWeekMatrix(): array
     {
-        return [
-            "Montag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Schweineschnitzel mit Bratkartoffeln", "price" => "4,10 €", "labels" => ["Schwein", "Gluten", "Eier"]],
-                    "ohne_fleisch" => ["name" => "Kichererbsen-Curry mit Basmatireis", "price" => "3,30 €", "labels" => ["Vegan"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Bratkartoffeln", "price" => "1,50 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Fruchtjoghurt", "price" => "1,20 €", "labels" => ["Milch"]],
-                ],
-            ],
-            "Dienstag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Gulasch mit Spätzle", "price" => "4,00 €", "labels" => ["Rind", "Gluten", "Eier"]],
-                    "ohne_fleisch" => ["name" => "Ofengemüse mit Couscous", "price" => "3,10 €", "labels" => ["Vegan", "Gluten"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Spätzle", "price" => "1,40 €", "labels" => ["Gluten", "Eier"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Karamellpudding", "price" => "1,20 €", "labels" => ["Milch"]],
-                ],
-            ],
-            "Mittwoch" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Hähnchen-Curry mit Reis", "price" => "3,90 €", "labels" => ["Hähnchen"]],
-                    "ohne_fleisch" => ["name" => "Veganes Erbsen-Risotto", "price" => "3,20 €", "labels" => ["Vegan"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Reis", "price" => "1,20 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Zitronenmousse", "price" => "1,40 €", "labels" => ["Milch", "Eier"]],
-                ],
-            ],
-            "Donnerstag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Bratwurst mit Sauerkraut", "price" => "3,60 €", "labels" => ["Schwein"]],
-                    "ohne_fleisch" => ["name" => "Süßkartoffel-Bowl", "price" => "3,50 €", "labels" => ["Vegan"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Sauerkraut", "price" => "1,20 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Waffeln mit Apfelmus", "price" => "1,60 €", "labels" => ["Milch", "Eier", "Gluten"]],
-                ],
-            ],
-            "Freitag" => [
-                "hauptgericht" => [
-                    "mit_fleisch" => ["name" => "Fish & Chips", "price" => "3,80 €", "labels" => ["Fisch", "Gluten"]],
-                    "ohne_fleisch" => ["name" => "Veganer Burger mit Pommes", "price" => "3,60 €", "labels" => ["Vegan", "Gluten"]],
-                ],
-                "beilage" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Kartoffelwedges", "price" => "1,50 €", "labels" => ["Vegan"]],
-                ],
-                "nachtisch" => [
-                    "mit_fleisch" => null,
-                    "ohne_fleisch" => ["name" => "Zitronen-Sorbet", "price" => "1,40 €", "labels" => ["Vegan"]],
-                ],
-            ],
-        ];
+        return $this->buildMatrix('next');
+    }
+
+    public function all(): array
+    {
+        $statement = Database::connection()->query(
+            'SELECT id, category, variant, name, price FROM dishes'
+        );
+        $dishes = $statement->fetchAll();
+
+        $categoryOrder = array_flip(array_keys(self::ROW_LABELS));
+
+        usort($dishes, function ($a, $b) use ($categoryOrder) {
+            return [$categoryOrder[$a['category']] ?? 99, $a['variant'], $a['name']]
+                <=> [$categoryOrder[$b['category']] ?? 99, $b['variant'], $b['name']];
+        });
+
+        $allergensByDish = $this->allergensByDishId(array_column($dishes, 'id'));
+
+        foreach ($dishes as &$dish) {
+            $dish['allergens'] = $allergensByDish[$dish['id']] ?? [];
+        }
+        unset($dish);
+
+        return $dishes;
+    }
+
+    public function find(int $id): ?array
+    {
+        $statement = Database::connection()->prepare(
+            'SELECT id, category, variant, name, price FROM dishes WHERE id = :id'
+        );
+        $statement->execute(['id' => $id]);
+        $dish = $statement->fetch();
+
+        if (!$dish) {
+            return null;
+        }
+
+        $dish['allergens'] = $this->allergensByDishId([$id])[$id] ?? [];
+
+        return $dish;
+    }
+
+    public function create(array $data): int
+    {
+        $statement = Database::connection()->prepare(
+            'INSERT INTO dishes (category, variant, name, price)
+             VALUES (:category, :variant, :name, :price)'
+        );
+        $statement->execute($data);
+
+        return (int) Database::connection()->lastInsertId();
+    }
+
+    public function update(int $id, array $data): void
+    {
+        $data['id'] = $id;
+        $statement = Database::connection()->prepare(
+            'UPDATE dishes SET category = :category, variant = :variant,
+             name = :name, price = :price WHERE id = :id'
+        );
+        $statement->execute($data);
+    }
+
+    public function delete(int $id): void
+    {
+        $statement = Database::connection()->prepare('DELETE FROM dishes WHERE id = :id');
+        $statement->execute(['id' => $id]);
+    }
+
+    public function allergens(): array
+    {
+        $statement = Database::connection()->query('SELECT name FROM allergens ORDER BY name');
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function resolveOrCreateAllergenIds(array $names): array
+    {
+        $db = Database::connection();
+        $insertStatement = $db->prepare('INSERT INTO allergens (name) VALUES (:name)');
+        $lookupStatement = $db->prepare('SELECT id FROM allergens WHERE name = :name');
+        $ids = [];
+
+        foreach (array_unique($names) as $name) {
+            $name = trim($name);
+
+            if ($name === '') {
+                continue;
+            }
+
+            $lookupStatement->execute(['name' => $name]);
+            $id = $lookupStatement->fetchColumn();
+
+            if ($id === false) {
+                $insertStatement->execute(['name' => $name]);
+                $id = (int) $db->lastInsertId();
+            }
+
+            $ids[] = (int) $id;
+        }
+
+        return $ids;
+    }
+
+    public function syncAllergens(int $dishId, array $allergenIds): void
+    {
+        $db = Database::connection();
+        $db->prepare('DELETE FROM dish_allergens WHERE dish_id = :dish_id')->execute(['dish_id' => $dishId]);
+
+        $linkStatement = $db->prepare(
+            'INSERT INTO dish_allergens (dish_id, allergen_id) VALUES (:dish_id, :allergen_id)'
+        );
+
+        foreach ($allergenIds as $allergenId) {
+            $linkStatement->execute(['dish_id' => $dishId, 'allergen_id' => $allergenId]);
+        }
+    }
+
+    private function allergensByDishId(array $dishIds): array
+    {
+        $dishIds = array_unique(array_map('intval', $dishIds));
+
+        if (!$dishIds) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($dishIds), '?'));
+        $statement = Database::connection()->prepare(
+            "SELECT dish_allergens.dish_id, allergens.name
+             FROM dish_allergens
+             JOIN allergens ON allergens.id = dish_allergens.allergen_id
+             WHERE dish_allergens.dish_id IN ($placeholders)
+             ORDER BY allergens.name"
+        );
+        $statement->execute($dishIds);
+
+        $result = [];
+        foreach ($statement->fetchAll() as $row) {
+            $result[(int) $row['dish_id']][] = $row['name'];
+        }
+
+        return $result;
+    }
+
+    private function buildMatrix(string $week): array
+    {
+        $matrix = [];
+
+        foreach (self::DAYS as $day) {
+            foreach (array_keys(self::ROW_LABELS) as $row) {
+                foreach (array_keys(self::COLUMN_LABELS) as $column) {
+                    $matrix[$day][$row][$column] = null;
+                }
+            }
+        }
+
+        $statement = Database::connection()->prepare(
+            'SELECT menu_slots.day, menu_slots.category, menu_slots.variant,
+                    dishes.id, dishes.name, dishes.price
+             FROM menu_slots
+             JOIN dishes ON dishes.id = menu_slots.dish_id
+             WHERE menu_slots.week = :week'
+        );
+        $statement->execute(['week' => $week]);
+        $rows = $statement->fetchAll();
+
+        $allergensByDish = $this->allergensByDishId(array_column($rows, 'id'));
+
+        foreach ($rows as $row) {
+            if (!isset($matrix[$row['day']][$row['category']])) {
+                continue;
+            }
+
+            $matrix[$row['day']][$row['category']][$row['variant']] = [
+                'id' => (int) $row['id'],
+                'name' => $row['name'],
+                'price' => $row['price'],
+                'labels' => $allergensByDish[(int) $row['id']] ?? [],
+            ];
+        }
+
+        return $matrix;
     }
 
     public function getWeeklyMenu()

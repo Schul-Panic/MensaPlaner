@@ -59,6 +59,9 @@ class Database
         // Postgres-Funktion NOW(), die u.a. Vote::cast() nutzt, unter SQLite nachbilden.
         @$pdo->sqliteCreateFunction('NOW', fn () => date('Y-m-d H:i:s'));
 
+        // SQLite ignoriert Fremdschlüssel (inkl. ON DELETE CASCADE) ohne dieses Pragma.
+        $pdo->exec('PRAGMA foreign_keys = ON');
+
         if ($isNew) {
             self::createMockSchema($pdo);
             self::seedMockData($pdo);
@@ -107,10 +110,52 @@ class Database
                 UNIQUE (dish_id, account_id)
             )
         ');
+
+        $pdo->exec('
+            CREATE TABLE dishes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                category TEXT NOT NULL,
+                variant TEXT NOT NULL,
+                name TEXT NOT NULL,
+                price TEXT NOT NULL
+            )
+        ');
+
+        $pdo->exec('
+            CREATE TABLE menu_slots (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                week TEXT NOT NULL,
+                day TEXT NOT NULL,
+                category TEXT NOT NULL,
+                variant TEXT NOT NULL,
+                dish_id INTEGER NOT NULL,
+                UNIQUE (week, day, category, variant),
+                FOREIGN KEY (dish_id) REFERENCES dishes (id) ON DELETE CASCADE
+            )
+        ');
+
+        $pdo->exec('
+            CREATE TABLE allergens (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL UNIQUE
+            )
+        ');
+
+        $pdo->exec('
+            CREATE TABLE dish_allergens (
+                dish_id INTEGER NOT NULL,
+                allergen_id INTEGER NOT NULL,
+                UNIQUE (dish_id, allergen_id),
+                FOREIGN KEY (dish_id) REFERENCES dishes (id) ON DELETE CASCADE,
+                FOREIGN KEY (allergen_id) REFERENCES allergens (id) ON DELETE CASCADE
+            )
+        ');
     }
 
     private static function seedMockData(PDO $pdo): void
     {
+        self::seedDishes($pdo);
+
         $passwordHash = password_hash('test1234', PASSWORD_DEFAULT);
 
         $accountStatement = $pdo->prepare(
@@ -203,6 +248,151 @@ class Database
 
         foreach ($mockVotes as $vote) {
             $voteStatement->execute($vote);
+        }
+    }
+
+    private static function seedDishes(PDO $pdo): void
+    {
+        $dishStatement = $pdo->prepare(
+            'INSERT INTO dishes (category, variant, name, price) VALUES (:category, :variant, :name, :price)'
+        );
+        $slotStatement = $pdo->prepare(
+            'INSERT INTO menu_slots (week, day, category, variant, dish_id) VALUES (:week, :day, :category, :variant, :dish_id)'
+        );
+        $allergenStatement = $pdo->prepare(
+            'INSERT OR IGNORE INTO allergens (name) VALUES (:name)'
+        );
+        $allergenLookupStatement = $pdo->prepare('SELECT id FROM allergens WHERE name = :name');
+        $linkStatement = $pdo->prepare(
+            'INSERT INTO dish_allergens (dish_id, allergen_id) VALUES (:dish_id, :allergen_id)'
+        );
+
+        $weeks = [
+            'current' => [
+                'Montag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Currywurst mit Pommes', '3,50 €', 'Schwein,Gluten'],
+                        'ohne_fleisch' => ['Gemüsecurry mit Reis', '3,20 €', 'Vegan'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Kartoffelsalat', '1,50 €', 'Eier']],
+                    'nachtisch' => ['ohne_fleisch' => ['Vanillepudding', '1,20 €', 'Milch,Eier']],
+                ],
+                'Dienstag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Rinderroulade mit Rotkohl und Klößen', '4,20 €', 'Rind,Gluten'],
+                        'ohne_fleisch' => ['Kartoffel-Lauch-Suppe mit Baguette', '2,80 €', 'Milch,Gluten'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Rotkohl', '1,40 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Schokopudding', '1,20 €', 'Milch']],
+                ],
+                'Mittwoch' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Hähnchengeschnetzeltes mit Basmatireis', '3,90 €', 'Hähnchen'],
+                        'ohne_fleisch' => ['Linsen-Curry mit Reis', '3,10 €', 'Vegan'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Basmatireis', '1,30 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Grießbrei mit Kirschen', '1,30 €', 'Milch,Gluten']],
+                ],
+                'Donnerstag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Putengeschnetzeltes mit Nudeln', '3,90 €', 'Pute,Gluten,Eier'],
+                        'ohne_fleisch' => ['Linsen-Dal mit Naan-Brot', '3,10 €', 'Gluten'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Salzkartoffeln', '1,30 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Milchreis mit Zimt-Zucker', '1,30 €', 'Milch']],
+                ],
+                'Freitag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Pizza Salami', '3,00 €', 'Schwein,Gluten,Milch'],
+                        'ohne_fleisch' => ['Pizza Margherita (vegan)', '3,00 €', 'Vegan,Gluten'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Rohkostsalat', '1,60 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Rote Grütze mit Vanillesoße', '1,30 €', 'Milch']],
+                ],
+            ],
+            'next' => [
+                'Montag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Schweineschnitzel mit Bratkartoffeln', '4,10 €', 'Schwein,Gluten,Eier'],
+                        'ohne_fleisch' => ['Kichererbsen-Curry mit Basmatireis', '3,30 €', 'Vegan'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Bratkartoffeln', '1,50 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Fruchtjoghurt', '1,20 €', 'Milch']],
+                ],
+                'Dienstag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Gulasch mit Spätzle', '4,00 €', 'Rind,Gluten,Eier'],
+                        'ohne_fleisch' => ['Ofengemüse mit Couscous', '3,10 €', 'Vegan,Gluten'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Spätzle', '1,40 €', 'Gluten,Eier']],
+                    'nachtisch' => ['ohne_fleisch' => ['Karamellpudding', '1,20 €', 'Milch']],
+                ],
+                'Mittwoch' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Hähnchen-Curry mit Reis', '3,90 €', 'Hähnchen'],
+                        'ohne_fleisch' => ['Veganes Erbsen-Risotto', '3,20 €', 'Vegan'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Reis', '1,20 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Zitronenmousse', '1,40 €', 'Milch,Eier']],
+                ],
+                'Donnerstag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Bratwurst mit Sauerkraut', '3,60 €', 'Schwein'],
+                        'ohne_fleisch' => ['Süßkartoffel-Bowl', '3,50 €', 'Vegan'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Sauerkraut', '1,20 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Waffeln mit Apfelmus', '1,60 €', 'Milch,Eier,Gluten']],
+                ],
+                'Freitag' => [
+                    'hauptgericht' => [
+                        'mit_fleisch' => ['Fish & Chips', '3,80 €', 'Fisch,Gluten'],
+                        'ohne_fleisch' => ['Veganer Burger mit Pommes', '3,60 €', 'Vegan,Gluten'],
+                    ],
+                    'beilage' => ['ohne_fleisch' => ['Kartoffelwedges', '1,50 €', 'Vegan']],
+                    'nachtisch' => ['ohne_fleisch' => ['Zitronen-Sorbet', '1,40 €', 'Vegan']],
+                ],
+            ],
+        ];
+
+        foreach ($weeks as $week => $days) {
+            foreach ($days as $day => $categories) {
+                foreach ($categories as $category => $variants) {
+                    foreach ($variants as $variant => [$name, $price, $labels]) {
+                        $dishStatement->execute([
+                            'category' => $category,
+                            'variant' => $variant,
+                            'name' => $name,
+                            'price' => $price,
+                        ]);
+                        $dishId = (int) $pdo->lastInsertId();
+
+                        $slotStatement->execute([
+                            'week' => $week,
+                            'day' => $day,
+                            'category' => $category,
+                            'variant' => $variant,
+                            'dish_id' => $dishId,
+                        ]);
+
+                        foreach (explode(',', $labels) as $allergenName) {
+                            $allergenName = trim($allergenName);
+
+                            if ($allergenName === '') {
+                                continue;
+                            }
+
+                            $allergenStatement->execute(['name' => $allergenName]);
+                            $allergenLookupStatement->execute(['name' => $allergenName]);
+                            $allergenId = (int) $allergenLookupStatement->fetchColumn();
+
+                            $linkStatement->execute([
+                                'dish_id' => $dishId,
+                                'allergen_id' => $allergenId,
+                            ]);
+                        }
+                    }
+                }
+            }
         }
     }
 }

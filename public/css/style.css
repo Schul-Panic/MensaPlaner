@@ -634,6 +634,12 @@ form.login-form button:hover {
     background: var(--color-primary-hover);
 }
 
+.button-download--small {
+    margin-top: 16px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+}
+
 .data-table th,
 .data-table td {
     padding: 10px 14px;
@@ -716,6 +722,41 @@ form.login-form button:hover {
     opacity: 0.6;
 }
 
+.icon-button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.icon-button:active {
+    transform: scale(0.92);
+}
+
+.icon-button--edit {
+    background: #c9a227;
+}
+
+.icon-button--edit:hover {
+    background: #a9860f;
+}
+
+.icon-button--delete {
+    background: #b3261e;
+}
+
+.icon-button--delete:hover {
+    background: #8f1e18;
+}
+
 .impersonate-button--self:hover {
     background: var(--color-bg) !important;
 }
@@ -736,6 +777,51 @@ form.login-form button:hover {
     padding: 1px 7px;
     border-radius: 999px;
     white-space: nowrap;
+}
+
+.label-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+form.login-form .label-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 1px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+form.login-form .label-pill:hover {
+    background: var(--color-bg);
+    border-color: var(--color-primary);
+}
+
+form.login-form .label-pill--active {
+    color: var(--color-text);
+    background: var(--color-surface);
+    border-color: var(--color-text);
+    font-weight: 700;
+}
+
+form.login-form .label-pill--add {
+    color: var(--color-primary);
+    border-style: dashed;
+}
+
+form.login-form .label-pill-input {
+    width: 90px;
+    font-size: 0.7rem;
+    padding: 1px 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
 }
 
 .menu-today-badge {
@@ -821,6 +907,7 @@ form.login-form button:hover {
 }
 
 .vote-button {
+    display: inline-block;
     border: 1px solid var(--color-border);
     background: var(--color-surface);
     color: var(--color-text);
@@ -830,6 +917,7 @@ form.login-form button:hover {
     border-radius: 999px;
     cursor: pointer;
     white-space: nowrap;
+    text-decoration: none;
     transition: background 0.15s ease, border-color 0.15s ease;
 }
 
