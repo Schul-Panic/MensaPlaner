@@ -111,14 +111,14 @@ class DishAdminController
         $category = $data['category'] ?? '';
         $variant = $data['variant'] ?? '';
         $name = trim($data['name'] ?? '');
-        $price = trim($data['price'] ?? '');
+        $price = $this->normalizePrice($data['price'] ?? '');
         $labels = trim($data['labels'] ?? '');
 
         if (
             !array_key_exists($category, Dish::ROW_LABELS)
             || !array_key_exists($variant, Dish::COLUMN_LABELS)
             || $name === ''
-            || $price === ''
+            || $price === null
         ) {
             return null;
         }
@@ -134,5 +134,17 @@ class DishAdminController
             ],
             $allergenNames,
         ];
+    }
+
+    private function normalizePrice(string $price): ?string
+    {
+        $price = trim(str_replace('€', '', $price));
+        $price = str_replace(',', '.', $price);
+
+        if (!is_numeric($price)) {
+            return null;
+        }
+
+        return number_format((float) $price, 2, ',', '.') . ' €';
     }
 }
