@@ -69,9 +69,4 @@ class Order
 
         return $quantities;
     }
-
-    public function totalCount(): int
-    {
-        return (int) Database::connection()->query('SELECT COUNT(*) FROM orders')->fetchColumn();
-    }
 }

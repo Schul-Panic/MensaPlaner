@@ -171,16 +171,7 @@ class DishController
 
         usort($uncategorized, $sortByQuantityDesc);
 
-        $topDish = null;
-        foreach ($quantities as $dishName => $quantity) {
-            if ($topDish === null || $quantity > $topDish['quantity']) {
-                $topDish = ['name' => $dishName, 'quantity' => $quantity];
-            }
-        }
-
         $maxQuantity = $quantities ? max($quantities) : 0;
-        $totalItems = array_sum($quantities);
-        $totalOrders = $orderModel->totalCount();
 
         ob_start();
         require __DIR__ . '/../View/orders.php';

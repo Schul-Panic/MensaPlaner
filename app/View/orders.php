@@ -9,23 +9,6 @@ require __DIR__ . '/layout/header.php';
 
 <h1>Bestellübersicht</h1>
 
-<div class="card order-summary">
-    <div class="order-summary-stat">
-        <span class="order-summary-value"><?php echo (int) $totalOrders; ?></span>
-        <span class="order-summary-label">Bestellungen</span>
-    </div>
-    <div class="order-summary-stat">
-        <span class="order-summary-value"><?php echo (int) $totalItems; ?></span>
-        <span class="order-summary-label">Gerichte bestellt</span>
-    </div>
-    <?php if ($topDish): ?>
-        <div class="order-summary-stat">
-            <span class="order-summary-value">🏆 <?php echo htmlspecialchars($topDish['name']); ?></span>
-            <span class="order-summary-label">Beliebtestes Gericht (<?php echo (int) $topDish['quantity']; ?>x)</span>
-        </div>
-    <?php endif; ?>
-</div>
-
 <?php foreach ($dishesByCategory as $category => $dishes): ?>
     <div class="card">
         <h2 class="menu-section-title"><?php echo htmlspecialchars(Dish::ROW_LABELS[$category]); ?></h2>
