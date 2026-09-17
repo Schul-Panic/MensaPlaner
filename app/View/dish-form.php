@@ -45,7 +45,6 @@ $selectedCategory = $isEdit ? $dish['category'] : ($prefillCategory ?? null);
             Preis
             <input type="text" name="price" placeholder="z. B. 3,50 oder 3.5" value="<?php echo htmlspecialchars($dish['price'] ?? ''); ?>" required>
         </label>
-        <p class="field-hint">Beliebiges Format möglich (3, 3,45, 3.45 …) — wird automatisch zu z. B. „3,45 €" normalisiert.</p>
         <label>
             Allergene
             <div class="label-picker" id="label-picker">

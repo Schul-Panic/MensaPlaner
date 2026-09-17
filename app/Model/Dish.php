@@ -46,8 +46,8 @@ class Dish
         $categoryOrder = array_flip(array_keys(self::ROW_LABELS));
 
         usort($dishes, function ($a, $b) use ($categoryOrder) {
-            return [$categoryOrder[$a['category']] ?? 99, $a['variant'], $a['name']]
-                <=> [$categoryOrder[$b['category']] ?? 99, $b['variant'], $b['name']];
+            return [$categoryOrder[$a['category']] ?? 99, (int) $a['id']]
+                <=> [$categoryOrder[$b['category']] ?? 99, (int) $b['id']];
         });
 
         $allergensByDish = $this->allergensByDishId(array_column($dishes, 'id'));
