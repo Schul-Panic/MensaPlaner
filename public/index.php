@@ -88,6 +88,7 @@ $app->group('', function (RouteCollectorProxy $group) {
 
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/speiseplan/bestellungen', [DishController::class, 'showOrderOverview']);
+    $group->get('/speiseplan/bestellungen/pdf', [DishController::class, 'downloadOrderOverviewPdf']);
 })->add($requireStaff);
 
 $app->group('', function (RouteCollectorProxy $group) {

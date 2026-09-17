@@ -598,28 +598,40 @@ form.login-form button:hover {
     border-collapse: collapse;
 }
 
+.order-table {
+    table-layout: fixed;
+}
+
 .order-table td {
     white-space: normal;
 }
 
-.order-bar-track {
-    margin-top: 6px;
-    max-width: 260px;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--color-bg);
-    overflow: hidden;
-}
-
-.order-bar-fill {
-    height: 100%;
-    background: var(--color-primary);
-    border-radius: 999px;
+.order-table th:last-child,
+.order-table td:last-child {
+    width: 160px;
 }
 
 .order-quantity {
     font-weight: 700;
     white-space: nowrap;
+}
+
+.button-download {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.button-download:hover {
+    background: var(--color-primary-hover);
 }
 
 .data-table th,

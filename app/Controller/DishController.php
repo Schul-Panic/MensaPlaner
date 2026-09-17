@@ -6,6 +6,7 @@ use App\Model\Dish;
 use App\Model\Order;
 use App\Model\Vote;
 use DateTime;
+use Dompdf\Dompdf;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -143,9 +144,46 @@ class DishController
 
     public function showOrderOverview(Request $request, Response $response): Response
     {
-        $orderModel = new Order();
+        [$dishesByCategory, $uncategorized] = $this->buildOrderOverview();
+        $weekLabel = $this->weekLabel($this->mondayOfWeek(1));
+
+        ob_start();
+        require __DIR__ . '/../View/orders.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
+    public function downloadOrderOverviewPdf(Request $request, Response $response): Response
+    {
+        [$dishesByCategory, $uncategorized] = $this->buildOrderOverview();
+        $monday = $this->mondayOfWeek(1);
+        $weekLabel = $this->weekLabel($monday);
+
+        ob_start();
+        require __DIR__ . '/../View/orders-pdf.php';
+        $html = ob_get_clean();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $filename = 'bestelluebersicht-kw-' . $monday->format('W-Y') . '.pdf';
+
+        $response->getBody()->write($dompdf->output());
+
+        return $response
+            ->withHeader('Content-Type', 'application/pdf')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+
+    private function buildOrderOverview(): array
+    {
         $categoryMap = (new Dish())->getDishCategoryMap();
-        $quantities = $orderModel->quantitiesByDishName();
+        $quantities = (new Order())->quantitiesByDishName();
 
         $dishesByCategory = array_fill_keys(array_keys(Dish::ROW_LABELS), []);
         $uncategorized = [];
@@ -171,15 +209,7 @@ class DishController
 
         usort($uncategorized, $sortByQuantityDesc);
 
-        $maxQuantity = $quantities ? max($quantities) : 0;
-
-        ob_start();
-        require __DIR__ . '/../View/orders.php';
-        $html = ob_get_clean();
-
-        $response->getBody()->write($html);
-
-        return $response;
+        return [$dishesByCategory, $uncategorized];
     }
 
     public function showNextWeekVoting(Request $request, Response $response): Response

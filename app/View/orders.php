@@ -7,7 +7,7 @@ $wide = true;
 require __DIR__ . '/layout/header.php';
 ?>
 
-<h1>Bestellübersicht</h1>
+<h1>Bestellübersicht <span class="week-label"><?php echo htmlspecialchars($weekLabel); ?></span></h1>
 
 <?php foreach ($dishesByCategory as $category => $dishes): ?>
     <div class="card">
@@ -25,12 +25,7 @@ require __DIR__ . '/layout/header.php';
                 <tbody>
                 <?php foreach ($dishes as $dish): ?>
                     <tr>
-                        <td>
-                            <?php echo htmlspecialchars($dish['name']); ?>
-                            <div class="order-bar-track">
-                                <div class="order-bar-fill" style="width: <?php echo $maxQuantity > 0 ? round($dish['quantity'] / $maxQuantity * 100) : 0; ?>%"></div>
-                            </div>
-                        </td>
+                        <td><?php echo htmlspecialchars($dish['name']); ?></td>
                         <td class="order-quantity"><?php echo (int) $dish['quantity']; ?>x</td>
                     </tr>
                 <?php endforeach; ?>
@@ -61,5 +56,7 @@ require __DIR__ . '/layout/header.php';
         </table>
     </div>
 <?php endif; ?>
+
+<!--<a href="/speiseplan/bestellungen/pdf" class="button-download">📄 PDF herunterladen</a>-->
 
 <?php require __DIR__ . '/layout/footer.php'; ?>
