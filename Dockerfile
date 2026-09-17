@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y --no-install-recommends unzip git libpq-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends unzip git libpq-dev libonig-dev \
     && docker-php-ext-install pdo_pgsql pgsql mbstring \
     && rm -rf /var/lib/apt/lists/*
 
