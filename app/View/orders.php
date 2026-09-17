@@ -8,7 +8,6 @@ require __DIR__ . '/layout/header.php';
 ?>
 
 <h1>Bestellübersicht</h1>
-<p class="intro">Wie oft wurde was bestellt &mdash; aufgeteilt nach Hauptgericht, Beilage und Nachtisch.</p>
 
 <div class="card order-summary">
     <div class="order-summary-stat">
