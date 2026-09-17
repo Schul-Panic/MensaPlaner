@@ -24,7 +24,7 @@ require __DIR__ . '/layout/header.php';
                     </span>
                     <div class="menu-matrix-labels">
                     <?php foreach ($dish['labels'] as $label): ?>
-                        <span class="dish-label"><?php echo htmlspecialchars($label); ?></span>
+                        <span class="dish-label<?php echo $label === 'Vegan' ? ' dish-label--vegan' : ''; ?>"><?php echo $label === 'Vegan' ? '🌿 ' : ''; ?><?php echo htmlspecialchars($label); ?></span>
                     <?php endforeach; ?>
                     </div>
                 </div>

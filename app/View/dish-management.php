@@ -29,7 +29,7 @@ require __DIR__ . '/layout/header.php';
                         <div class="menu-matrix-labels">
                             <span class="dish-label"><?php echo htmlspecialchars(Dish::COLUMN_LABELS[$dish['variant']] ?? $dish['variant']); ?></span>
                             <?php foreach ($dish['allergens'] as $allergen): ?>
-                                <span class="dish-label"><?php echo htmlspecialchars($allergen); ?></span>
+                                <span class="dish-label<?php echo $allergen === 'Vegan' ? ' dish-label--vegan' : ''; ?>"><?php echo $allergen === 'Vegan' ? '🌿 ' : ''; ?><?php echo htmlspecialchars($allergen); ?></span>
                             <?php endforeach; ?>
                         </div>
                     </div>

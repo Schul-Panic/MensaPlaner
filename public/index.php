@@ -6,7 +6,6 @@ use App\Controller\AdminController;
 use App\Controller\AuthController;
 use App\Controller\DishAdminController;
 use App\Controller\DishController;
-use App\Controller\MigrationController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -106,7 +105,6 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/users/{id}/delete', [AdminController::class, 'deleteAccount']);
     $group->post('/users/{id}/impersonate', [AdminController::class, 'impersonate']);
     $group->post('/stop-impersonate', [AdminController::class, 'stopImpersonate']);
-    $group->get('/migrations/dishes', [MigrationController::class, 'runDishesMigration']);
 })->add($requireAdmin);
 
 $app->run();

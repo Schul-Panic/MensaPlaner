@@ -779,6 +779,12 @@ form.login-form button:hover {
     white-space: nowrap;
 }
 
+.dish-label--vegan {
+    color: var(--color-primary-hover);
+    background: color-mix(in srgb, var(--color-primary) 14%, var(--color-bg));
+    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
 .label-picker {
     display: flex;
     flex-wrap: wrap;
