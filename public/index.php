@@ -38,6 +38,18 @@ $requireAdmin = function (Request $request, RequestHandler $handler) {
     return $handler->handle($request);
 };
 
+$requireStaff = function (Request $request, RequestHandler $handler) {
+    if (empty($_SESSION['account_id'])) {
+        return (new SlimResponse())->withHeader('Location', '/')->withStatus(302);
+    }
+
+    if (!in_array($_SESSION['account_role'] ?? '', ['admin', 'mitarbeiter'], true)) {
+        return (new SlimResponse())->withHeader('Location', '/speiseplan')->withStatus(302);
+    }
+
+    return $handler->handle($request);
+};
+
 $app->get('/', function (Request $request, Response $response) {
     ob_start();
     require __DIR__ . '/../app/View/home.php';
@@ -73,6 +85,10 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
     $group->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
 })->add($requireLogin);
+
+$app->group('', function (RouteCollectorProxy $group) {
+    $group->get('/speiseplan/bestellungen', [DishController::class, 'showOrderOverview']);
+})->add($requireStaff);
 
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/users', [AdminController::class, 'showAccounts']);

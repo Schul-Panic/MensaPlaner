@@ -269,6 +269,25 @@ class Dish
         return $menu;
     }
 
+    public function getDishCategoryMap(): array
+    {
+        $map = [];
+
+        foreach ([$this->getWeeklyMatrix(), $this->getNextWeekMatrix()] as $matrix) {
+            foreach ($matrix as $rows) {
+                foreach ($rows as $row => $columns) {
+                    foreach ($columns as $dish) {
+                        if ($dish !== null) {
+                            $map[$dish['name']] = $row;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $map;
+    }
+
     public function getFlattenedDishes()
     {
         $dishes = [];

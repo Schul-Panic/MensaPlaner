@@ -598,6 +598,55 @@ form.login-form button:hover {
     border-collapse: collapse;
 }
 
+.order-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+}
+
+.order-summary-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-summary-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.order-summary-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+}
+
+.order-table td {
+    white-space: normal;
+}
+
+.order-bar-track {
+    margin-top: 6px;
+    max-width: 260px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-bg);
+    overflow: hidden;
+}
+
+.order-bar-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 999px;
+}
+
+.order-quantity {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .data-table th,
 .data-table td {
     padding: 10px 14px;

@@ -141,6 +141,56 @@ class DishController
         return [$items, $total];
     }
 
+    public function showOrderOverview(Request $request, Response $response): Response
+    {
+        $orderModel = new Order();
+        $categoryMap = (new Dish())->getDishCategoryMap();
+        $quantities = $orderModel->quantitiesByDishName();
+
+        $dishesByCategory = array_fill_keys(array_keys(Dish::ROW_LABELS), []);
+        $uncategorized = [];
+
+        foreach ($quantities as $dishName => $quantity) {
+            $category = $categoryMap[$dishName] ?? null;
+            $entry = ['name' => $dishName, 'quantity' => $quantity];
+
+            if ($category === null) {
+                $uncategorized[] = $entry;
+                continue;
+            }
+
+            $dishesByCategory[$category][] = $entry;
+        }
+
+        $sortByQuantityDesc = fn ($a, $b) => $b['quantity'] <=> $a['quantity'];
+
+        foreach ($dishesByCategory as &$dishes) {
+            usort($dishes, $sortByQuantityDesc);
+        }
+        unset($dishes);
+
+        usort($uncategorized, $sortByQuantityDesc);
+
+        $topDish = null;
+        foreach ($quantities as $dishName => $quantity) {
+            if ($topDish === null || $quantity > $topDish['quantity']) {
+                $topDish = ['name' => $dishName, 'quantity' => $quantity];
+            }
+        }
+
+        $maxQuantity = $quantities ? max($quantities) : 0;
+        $totalItems = array_sum($quantities);
+        $totalOrders = $orderModel->totalCount();
+
+        ob_start();
+        require __DIR__ . '/../View/orders.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
     public function showNextWeekVoting(Request $request, Response $response): Response
     {
         $dishModel = new Dish();

@@ -16,6 +16,7 @@ class Order
         );
         $orderStatement->execute(['account_id' => $accountId]);
         $orderId = (int) $orderStatement->fetchColumn();
+        $orderStatement->closeCursor();
 
         $itemStatement = $db->prepare(
             'INSERT INTO order_items (order_id, dish_name, price, quantity)
@@ -53,5 +54,24 @@ class Order
         }
 
         return $orders;
+    }
+
+    public function quantitiesByDishName(): array
+    {
+        $statement = Database::connection()->query(
+            'SELECT dish_name, SUM(quantity) AS total FROM order_items GROUP BY dish_name'
+        );
+
+        $quantities = [];
+        foreach ($statement->fetchAll() as $row) {
+            $quantities[$row['dish_name']] = (int) $row['total'];
+        }
+
+        return $quantities;
+    }
+
+    public function totalCount(): int
+    {
+        return (int) Database::connection()->query('SELECT COUNT(*) FROM orders')->fetchColumn();
     }
 }
