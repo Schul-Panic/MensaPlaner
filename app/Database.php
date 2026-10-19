@@ -9,46 +9,90 @@ class Database
 {
     private static ?PDO $connection = null;
 
+    /**
+     * Umschalten über DB_CONNECTION:
+     *  - leer/"sqlite": lokale SQLite-Datei mit den hier hinterlegten Mock-Daten
+     *                   (DB_SQLITE_PATH, sonst Temp-Verzeichnis)
+     *  - "pgsql":       PostgreSQL über DATABASE_URL oder DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD;
+     *                   ist die DB nicht erreichbar, gibt es einen Fehler statt stiller Mock-Daten
+     */
     public static function connection(): PDO
     {
         if (self::$connection === null) {
-            self::$connection = self::connectToPostgres() ?? self::createMockConnection();
+            self::$connection = self::driver() === 'pgsql'
+                ? self::connectToPostgres()
+                : self::createMockConnection();
         }
 
         return self::$connection;
     }
 
-    private static function connectToPostgres(): ?PDO
+    public static function driver(): string
     {
+        return strtolower(trim((string) getenv('DB_CONNECTION')));
+    }
+
+    private static function connectToPostgres(): PDO
+    {
+        $config = self::postgresConfig();
+
+        if ($config === null) {
+            throw new PDOException('DB_CONNECTION=pgsql, aber weder DATABASE_URL noch DB_HOST/DB_NAME gesetzt.');
+        }
+
+        $dsn = "pgsql:host={$config['host']};port={$config['port']};dbname={$config['dbname']};connect_timeout=3";
+
+        if ($config['sslmode'] !== '') {
+            $dsn .= ";sslmode={$config['sslmode']}";
+        }
+
+        return new PDO($dsn, $config['user'], $config['password'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+    }
+
+    private static function postgresConfig(): ?array
+    {
+        // Render & Co. liefern eine fertige URL: postgres://user:pass@host:port/dbname
+        $url = getenv('DATABASE_URL');
+
+        if ($url) {
+            $parts = parse_url($url);
+            parse_str($parts['query'] ?? '', $query);
+
+            return [
+                'host' => $parts['host'] ?? '',
+                'port' => (string) ($parts['port'] ?? '5432'),
+                'dbname' => ltrim($parts['path'] ?? '', '/'),
+                'user' => urldecode($parts['user'] ?? ''),
+                'password' => urldecode($parts['pass'] ?? ''),
+                'sslmode' => $query['sslmode'] ?? (getenv('DB_SSLMODE') ?: ''),
+            ];
+        }
+
         $host = getenv('DB_HOST');
-        $port = getenv('DB_PORT') ?: '5432';
         $dbname = getenv('DB_NAME');
-        $user = getenv('DB_USER');
-        $password = getenv('DB_PASSWORD');
 
         if (!$host || !$dbname) {
             return null;
         }
 
-        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};connect_timeout=3";
-
-        try {
-            return new PDO($dsn, $user, $password, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-        } catch (PDOException $exception) {
-            error_log('MensaPlaner: PostgreSQL nicht erreichbar, verwende Mock-Daten (' . $exception->getMessage() . ')');
-
-            return null;
-        }
+        return [
+            'host' => $host,
+            'port' => getenv('DB_PORT') ?: '5432',
+            'dbname' => $dbname,
+            'user' => getenv('DB_USER') ?: null,
+            'password' => getenv('DB_PASSWORD') ?: null,
+            'sslmode' => getenv('DB_SSLMODE') ?: '',
+        ];
     }
 
     private static function createMockConnection(): PDO
     {
         // Datei statt :memory:, damit die Mock-Daten (z.B. neue Bestellungen) über
         // mehrere Requests hinweg erhalten bleiben. Löschen setzt den Stand zurück.
-        $path = sys_get_temp_dir() . '/mensaplaner_mock.sqlite';
+        $path = getenv('DB_SQLITE_PATH') ?: sys_get_temp_dir() . '/mensaplaner_mock.sqlite';
         $isNew = !file_exists($path);
 
         $pdo = new PDO("sqlite:{$path}", null, null, [
