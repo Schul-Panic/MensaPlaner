@@ -446,7 +446,9 @@ form.login-form button:hover {
     border-radius: 8px;
     background: var(--color-surface);
     color: var(--color-text);
+    font-size: 0.85rem;
     font-weight: 600;
+    text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
 }
@@ -454,6 +456,11 @@ form.login-form button:hover {
 .oauth-button:hover {
     background: var(--color-bg);
     border-color: var(--color-muted);
+}
+
+.mock-notice {
+    margin: 0 0 16px;
+    color: var(--color-muted);
 }
 
 .oauth-icon {

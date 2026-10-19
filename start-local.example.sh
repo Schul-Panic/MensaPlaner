@@ -20,4 +20,10 @@ export DATABASE_URL=""
 # Standard ist eine Datei im Temp-Verzeichnis; löschen setzt die Mock-Daten zurück.
 # export DB_SQLITE_PATH="$PWD/mensaplaner.sqlite"
 
+# --- Login mit Google (leer = Button zeigt "nicht eingerichtet") ---
+# Rücksprung-Adresse in der Google Console: http://localhost:8000/auth/google/callback
+# export GOOGLE_CLIENT_ID=""
+# export GOOGLE_CLIENT_SECRET=""
+# export APP_URL="https://…"   # nur nötig, falls die Rücksprung-Adresse falsch erkannt wird
+
 php -S localhost:8000 router.php

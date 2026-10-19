@@ -6,6 +6,7 @@ use App\Controller\AdminController;
 use App\Controller\AuthController;
 use App\Controller\DishAdminController;
 use App\Controller\DishController;
+use App\Controller\OAuthController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
@@ -75,6 +76,10 @@ $app->get('/register', function (Request $request, Response $response) {
 
 $app->post('/register', [AuthController::class, 'register']);
 $app->get('/logout', [AuthController::class, 'logout']);
+
+$app->get('/auth/{provider:google}', [OAuthController::class, 'redirect']);
+$app->get('/auth/{provider:google}/callback', [OAuthController::class, 'callback']);
+$app->get('/auth/{provider:microsoft|apple}', [OAuthController::class, 'showMock']);
 
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/speiseplan', [DishController::class, 'showDishes']);
