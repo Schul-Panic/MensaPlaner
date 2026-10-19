@@ -410,6 +410,36 @@ form.login-form button:hover {
     background: var(--color-primary-hover);
 }
 
+/* Passwortfeld mit Auge (wird per Skript im Footer eingefügt) */
+.password-field {
+    position: relative;
+    display: block;
+}
+
+.password-field .password-input {
+    width: 100%;
+    padding-right: 44px;
+}
+
+.password-field .password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    display: flex;
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+}
+
+.password-field .password-toggle:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
 .divider {
     display: flex;
     align-items: center;
