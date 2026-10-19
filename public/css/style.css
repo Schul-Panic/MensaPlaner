@@ -252,10 +252,14 @@ nav a:hover {
 }
 
 h1 {
-    display: flex;
-    justify-content: center;
-    font-size: 2.75rem;
+    font-size: 1.75rem;
     margin: 0 0 20px;
+}
+
+/* Große, zentrierte Überschrift nur auf den Seiten ohne Login */
+.container--auth h1 {
+    font-size: 2.75rem;
+    text-align: center;
 }
 
 .week-label {

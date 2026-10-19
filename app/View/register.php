@@ -1,7 +1,7 @@
 <?php require __DIR__ . '/layout/header.php'; ?>
 
-<h1>Konto erstellen</h1>
-<p class="intro">Registriere dich, um MensaPlaner nutzen zu können.</p>
+<h1>Konto bei MensaPlaner erstellen</h1>
+<!-- <p class="intro">Registriere dich, um MensaPlaner nutzen zu können.</p> -->
 
 <?php if (!empty($_SESSION['flash_error'])): ?>
     <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
