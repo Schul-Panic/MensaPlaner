@@ -15,6 +15,17 @@ require __DIR__ . '/layout/header.php';
 
 <p class="intro">Wochenmenü Montag bis Freitag</p>
 
+<div class="week-notice">
+    <div class="week-notice-text">
+        <strong>Diese Woche gibt es das Essen nur vor Ort.</strong>
+        <span>Vorbestellen und Wünsche abgeben kannst du für die nächste Woche.</span>
+    </div>
+    <div class="week-notice-actions">
+        <a href="/speiseplan/naechste" class="week-notice-button">Nächste Woche</a>
+        <a href="/speiseplan/naechste-woche" class="week-notice-button week-notice-button--outline">Wünsche</a>
+    </div>
+</div>
+
 <div class="menu-week">
 <?php foreach ($weeklyMatrix as $weekday => $rows): ?>
     <div class="menu-day<?php echo $weekday === $today ? ' menu-day--today' : ''; ?>">

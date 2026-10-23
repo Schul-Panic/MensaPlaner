@@ -11,7 +11,6 @@
     <div class="card">
         <p class="cart-empty">Dein Warenkorb ist leer.</p>
     </div>
-    <p class="switch-auth"><a href="/speiseplan/naechste">Gerichte für nächste Woche ansehen</a></p>
 <?php else: ?>
     <div class="card">
         <ul class="menu-dish-list">
