@@ -95,6 +95,7 @@ $app->group('', function (RouteCollectorProxy $group) {
 $app->group('', function (RouteCollectorProxy $group) {
     $group->get('/speiseplan/bestellungen', [DishController::class, 'showOrderOverview']);
     $group->get('/speiseplan/bestellungen/pdf', [DishController::class, 'downloadOrderOverviewPdf']);
+    $group->get('/speiseplan/bestellungen/alle', [DishController::class, 'showAllOrders']);
     $group->get('/speiseplan/verwaltung', [DishAdminController::class, 'showDishManagement']);
     $group->get('/speiseplan/verwaltung/neu', [DishAdminController::class, 'newDish']);
     $group->post('/speiseplan/verwaltung', [DishAdminController::class, 'createDish']);

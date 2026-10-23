@@ -156,6 +156,28 @@ class DishController
         return $response;
     }
 
+    public function showAllOrders(Request $request, Response $response): Response
+    {
+        $orders = (new Order())->all();
+
+        foreach ($orders as &$order) {
+            $total = 0.0;
+            foreach ($order['items'] as $item) {
+                $total += (float) str_replace(',', '.', rtrim(trim($item['price']), ' €')) * (int) $item['quantity'];
+            }
+            $order['totalFormatted'] = number_format($total, 2, ',', '.') . ' €';
+        }
+        unset($order);
+
+        ob_start();
+        require __DIR__ . '/../View/orders-all.php';
+        $html = ob_get_clean();
+
+        $response->getBody()->write($html);
+
+        return $response;
+    }
+
     public function downloadOrderOverviewPdf(Request $request, Response $response): Response
     {
         [$dishesByCategory, $uncategorized] = $this->buildOrderOverview();

@@ -56,6 +56,31 @@ class Order
         return $orders;
     }
 
+    public function all(): array
+    {
+        $db = Database::connection();
+
+        // LEFT JOIN, damit Bestellungen gelöschter Accounts sichtbar bleiben
+        $orders = $db->query(
+            'SELECT orders.id, orders.created_at, accounts.name AS account_name, accounts.role AS account_role
+             FROM orders
+             LEFT JOIN accounts ON accounts.id = orders.account_id
+             ORDER BY orders.created_at DESC, orders.id DESC'
+        )->fetchAll();
+
+        $itemsByOrder = [];
+        foreach ($db->query('SELECT order_id, dish_name, price, quantity FROM order_items ORDER BY id')->fetchAll() as $item) {
+            $itemsByOrder[(int) $item['order_id']][] = $item;
+        }
+
+        foreach ($orders as &$order) {
+            $order['items'] = $itemsByOrder[(int) $order['id']] ?? [];
+        }
+        unset($order);
+
+        return $orders;
+    }
+
     public function quantitiesByDishName(): array
     {
         $statement = Database::connection()->query(
