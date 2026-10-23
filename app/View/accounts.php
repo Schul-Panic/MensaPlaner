@@ -6,7 +6,6 @@ require __DIR__ . '/layout/header.php';
 ?>
 
 <h1>Benutzer</h1>
-<p class="intro">Alle registrierten Accounts &mdash; nur für Admins sichtbar.</p>
 
 <?php if (!empty($_SESSION['flash_error'])): ?>
     <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
