@@ -1,6 +1,7 @@
 <?php
 
 use App\Model\Dish;
+use App\Model\Wish;
 
 require __DIR__ . '/layout/header.php';
 ?>
@@ -46,5 +47,40 @@ require __DIR__ . '/layout/header.php';
         </ul>
     </div>
 <?php endforeach; ?>
+
+<div class="card" id="wunsch">
+    <h2 class="menu-section-title">Dein Wunsch</h2>
+    <p class="intro">Fehlt dir ein Gericht? Schreib uns, was du gern essen möchtest.</p>
+
+    <?php if (!empty($_SESSION['flash_success'])): ?>
+        <p class="flash-success"><?php echo htmlspecialchars($_SESSION['flash_success']); unset($_SESSION['flash_success']); ?></p>
+    <?php endif; ?>
+    <?php if (!empty($_SESSION['flash_error'])): ?>
+        <p class="flash-error"><?php echo htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></p>
+    <?php endif; ?>
+
+    <form method="post" action="/speiseplan/naechste-woche/wunsch" class="wish-form">
+        <textarea name="wish" rows="3" maxlength="<?php echo Wish::MAX_LENGTH; ?>" placeholder="z. B. Lasagne, mehr vegane Nachtische …" required></textarea>
+        <button type="submit">Wunsch senden</button>
+    </form>
+</div>
+
+<?php if ($isStaff): ?>
+    <div class="card">
+        <h2 class="menu-section-title">Eingegangene Wünsche</h2>
+        <?php if (!$wishes): ?>
+            <p class="menu-matrix-empty">Noch keine Wünsche.</p>
+        <?php else: ?>
+            <ul class="wish-list">
+            <?php foreach ($wishes as $wish): ?>
+                <li>
+                    <p><?php echo nl2br(htmlspecialchars($wish['text'])); ?></p>
+                    <span class="wish-meta"><?php echo htmlspecialchars($wish['account_name'] ?? 'Gelöschter Account'); ?> · <?php echo htmlspecialchars(substr($wish['created_at'], 0, 16)); ?></span>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
 
 <?php require __DIR__ . '/layout/footer.php'; ?>

@@ -90,6 +90,7 @@ $app->group('', function (RouteCollectorProxy $group) {
     $group->post('/speiseplan/warenkorb/bestellen', [DishController::class, 'placeOrder']);
     $group->get('/speiseplan/naechste-woche', [DishController::class, 'showNextWeekVoting']);
     $group->post('/speiseplan/naechste-woche/vote/{id}/{direction}', [DishController::class, 'voteDish']);
+    $group->post('/speiseplan/naechste-woche/wunsch', [DishController::class, 'submitWish']);
 })->add($requireLogin);
 
 $app->group('', function (RouteCollectorProxy $group) {

@@ -25,6 +25,14 @@ CREATE TABLE IF NOT EXISTS order_items (
     quantity INTEGER NOT NULL
 );
 
+-- Freitext-Wünsche von der Abstimmungsseite
+CREATE TABLE IF NOT EXISTS wishes (
+    id SERIAL PRIMARY KEY,
+    account_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- dish_id verweist auf die IDs aus Dish::getFlattenedDishes(), nicht auf dishes.id.
 CREATE TABLE IF NOT EXISTS votes (
     dish_id INTEGER NOT NULL,

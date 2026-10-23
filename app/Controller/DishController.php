@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Model\Dish;
 use App\Model\Order;
 use App\Model\Vote;
+use App\Model\Wish;
 use DateTime;
 use Dompdf\Dompdf;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -253,6 +254,8 @@ class DishController
         $votes = $voteModel->resultsForDishIds($allDishIds);
         $votedChoices = $voteModel->userVotes((int) $_SESSION['account_id']);
         $weekLabel = $this->weekLabel($this->mondayOfWeek(1));
+        $isStaff = in_array($_SESSION['account_role'] ?? '', ['admin', 'mitarbeiter'], true);
+        $wishes = $isStaff ? (new Wish())->all() : [];
 
         ob_start();
         require __DIR__ . '/../View/next-week.php';
@@ -273,6 +276,20 @@ class DishController
         }
 
         return $response->withHeader('Location', '/speiseplan/naechste-woche')->withStatus(302);
+    }
+
+    public function submitWish(Request $request, Response $response): Response
+    {
+        $text = trim((string) ($request->getParsedBody()['wish'] ?? ''));
+
+        if ($text === '') {
+            $_SESSION['flash_error'] = 'Bitte schreib zuerst deinen Wunsch.';
+        } else {
+            (new Wish())->create((int) $_SESSION['account_id'], mb_substr($text, 0, Wish::MAX_LENGTH));
+            $_SESSION['flash_success'] = 'Danke! Dein Wunsch ist angekommen.';
+        }
+
+        return $response->withHeader('Location', '/speiseplan/naechste-woche#wunsch')->withStatus(302);
     }
 
     private function currentGermanWeekday(): string

@@ -111,6 +111,16 @@ class Database
             self::seedMockData($pdo);
         }
 
+        // Später ergänzte Tabellen auch in bereits vorhandenen Mock-Dateien anlegen.
+        $pdo->exec('
+            CREATE TABLE IF NOT EXISTS wishes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                account_id INTEGER NOT NULL,
+                text TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        ');
+
         return $pdo;
     }
 
