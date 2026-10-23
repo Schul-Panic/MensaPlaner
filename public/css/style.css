@@ -55,21 +55,30 @@ nav {
 }
 
 .nav-inner {
-    max-width: 1200px;
+    max-width: 1320px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 8px;
     padding: 16px 20px;
+}
+
+/* Drei Gruppen: Logo | Menüpunkte | Nutzer, gleichmäßig verteilt */
+.nav-brand,
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
 }
 
 nav a {
     text-decoration: none;
     color: var(--color-muted);
     font-weight: 600;
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 999px;
     transition: background 0.15s ease, color 0.15s ease;
 }
@@ -151,7 +160,6 @@ nav a:hover {
 }
 
 .nav-account-actions {
-    margin-left: auto;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -164,15 +172,25 @@ nav a:hover {
 }
 
 .nav-logout {
-    background: #fbe4e1;
+    padding: 8px 4px;
     color: #b3261e;
-    border: 1px solid #f0b8b0;
-    font-weight: 700;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .nav-logout:hover {
-    background: #b3261e;
-    color: #fff;
+    background: none;
+    color: #8c1d18;
+    text-decoration: underline;
+}
+
+.nav-logo {
+    display: flex;
+    padding: 0;
+}
+
+.nav-logo:hover {
+    background: none;
 }
 
 .nav-dropdown {
